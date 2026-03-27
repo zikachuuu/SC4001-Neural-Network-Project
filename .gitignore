@@ -1,5 +1,8 @@
 emo_db/
 ravdess/
+SER_DCNN_DTPM/processed_data_emodb/
+fine_tuned_alexnet.pth
+fine_tuned_alexnet_best.pth
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -28,6 +31,8 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+
+.DS_Store
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -208,3 +213,5 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+SER_DCNN_DTPM/fine_tuned_alexnet.pth
+SER_DCNN_DTPM/svm_emotion_model.pkl
