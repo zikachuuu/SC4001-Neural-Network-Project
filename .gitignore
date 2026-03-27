@@ -4,6 +4,9 @@ SER_DCNN_DTPM/processed_data_emodb/
 fine_tuned_alexnet.pth
 fine_tuned_alexnet_best.pth
 *.npy
+*.pth
+*.pkl
+*.joblib
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

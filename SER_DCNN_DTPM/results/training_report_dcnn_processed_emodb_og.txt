@@ -1,0 +1,19 @@
+Epoch 1, Train Loss: 1.5391, Val Loss: 1.4000, Val Accuracy: 0.4860
+Validation loss improved, model saved.
+Epoch 2, Train Loss: 1.2218, Val Loss: 1.1017, Val Accuracy: 0.5847
+Validation loss improved, model saved.
+Epoch 3, Train Loss: 1.1420, Val Loss: 1.0420, Val Accuracy: 0.5698
+Validation loss improved, model saved.
+Epoch 4, Train Loss: 0.9621, Val Loss: 0.9670, Val Accuracy: 0.6294
+Validation loss improved, model saved.
+Epoch 5, Train Loss: 0.9272, Val Loss: 1.3564, Val Accuracy: 0.5140
+Validation loss did not improve. Counter: 1/5
+Epoch 6, Train Loss: 0.7751, Val Loss: 1.0752, Val Accuracy: 0.6071
+Validation loss did not improve. Counter: 2/5
+Epoch 7, Train Loss: 0.6895, Val Loss: 0.9914, Val Accuracy: 0.5996
+Validation loss did not improve. Counter: 3/5
+Epoch 8, Train Loss: 0.6546, Val Loss: 1.1222, Val Accuracy: 0.6350
+Validation loss did not improve. Counter: 4/5
+Epoch 9, Train Loss: 0.5263, Val Loss: 1.1077, Val Accuracy: 0.6648
+Validation loss did not improve. Counter: 5/5
+Validation loss increased, stopping early.
