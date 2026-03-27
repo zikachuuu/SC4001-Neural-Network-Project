@@ -4,10 +4,44 @@ import numpy as np
 
 from utility import EMOTION_MAP
 
-DATA_DIR = "../emo_db/" # Update this to your kaggle dataset path
-OUTPUT_DIR = "./processed_data_emodb/"
+
+np.random.seed(42)
+
+# get directory of current script
+curr_dir = os.path.dirname(os.path.abspath(__file__))
+
+DATA_DIR    = os.path.join(curr_dir, "../emo_db/")
+OUTPUT_DIR  = os.path.join(curr_dir, "./processed_emodb_og/")
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+"""
+BASELINE
+
+We preprocess the EMO-DB dataset here by roughly following the pipeline in the paper.
+For each audio file,
+    1. We extract the 3 channels of features: static log-Mel spectrogram, delta, and delta-delta.
+    2. We slice the features into 64-frame segments with a 30-frame shift, and assign the same emotion label to all segments from the same utterance.
+
+We also split the dataset by speaker to prevent data leakage and overfitting, 
+as the model could learn speaker-specific features rather than emotion-specific features if the same speaker appeared in both training and testing sets.
+
+We have 10 speakers in EMO-DB
+    03 - male, 31 years old
+    08 - female, 34 years
+    09 - female, 21 years
+    10 - male, 32 years
+    11 - male, 26 years
+    12 - male, 30 years
+    13 - female, 32 years
+    14 - female, 35 years
+    15 - male, 25 years
+    16 - female, 31 years
+
+We will use speakers 03, 08, 09, 10, 11, 12, 13 for training (7 speakers)
+Speaker 14 for validation (1 speaker)
+Speakers 15, 16 for testing (2 speakers)
+"""
 
 def process_audio(file_path):
     # The paper uses 16kHz sampling rate
@@ -43,24 +77,6 @@ def process_audio(file_path):
     return segments
 
 
-# We have 10 speakers in EMO-DB
-# 03 - male, 31 years old
-# 08 - female, 34 years
-# 09 - female, 21 years
-# 10 - male, 32 years
-# 11 - male, 26 years
-# 12 - male, 30 years
-# 13 - female, 32 years
-# 14 - female, 35 years
-# 15 - male, 25 years
-# 16 - female, 31 years
-
-# We will use speakers 03, 08, 09, 10, 11, 12, 13 for training (7 speakers)
-# Speaker 14 for validation (1 speaker)
-# Speakers 15, 16 for testing (2 speakers)
-
-# If the same speaker appeared in both sets, then it may lead to data leakage and overfitting, 
-# as the model could learn speaker-specific features rather than emotion-specific features
 
 X_train = []
 y_train = []
