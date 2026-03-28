@@ -1,5 +1,5 @@
 # EMO-DB Emotion mapping based on the 6th character of the filename
-EMOTION_MAP = {
+EMOTION_CODE_MAP = {
     'W': 0,     # 'W' for "Wut" (Anger)
     'L': 1,     # 'L' for "Langeweile" (Boredom)
     'A': 2,     # 'A' for "Angst" (Fear)
@@ -8,3 +8,14 @@ EMOTION_MAP = {
     'E': 5,     # 'E' for "Ekel" (Disgust)
     'N': 6      # 'N' for "Neutrale Emotion" (Neutral)
 }
+
+EMOTION_ENG_MAP = {
+    0: 'Anger',
+    1: 'Boredom',
+    2: 'Fear',
+    3: 'Happiness',
+    4: 'Sadness',
+    5: 'Disgust',
+    6: 'Neutral'
+}
+

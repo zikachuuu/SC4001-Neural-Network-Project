@@ -1,140 +1,402 @@
+import argparse
 import os
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional, Sequence, Tuple
+
 import librosa
 import numpy as np
 
-from utility import EMOTION_MAP
+from utility import EMOTION_CODE_MAP
 
 
 np.random.seed(42)
 
-# get directory of current script
-curr_dir = os.path.dirname(os.path.abspath(__file__))
 
-DATA_DIR    = os.path.join(curr_dir, "../emo_db/")
-OUTPUT_DIR  = os.path.join(curr_dir, "./processed_emodb_og/")
+@dataclass(frozen=True)
+class SplitConfig:
+    """
+    Configuration for speaker-based train/validation/test split.
+        - EMO-DB has 10 speakers (03, 08, 09, 10, 11, 12, 13, 14, 15, 16).
+        - The default split is speaker (03, 08, 09, 10, 11, 12, 13) for training, speaker (14) for validation, and speakers (15, 16) for testing.
+        - This class allows customizing the split if needed.
+        - The get_split_name method returns the split name for a given speaker ID or None if the speaker is not in any split.
 
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+    Information about the speakers:
+        - 03 - male, 31 years old
+        - 08 - female, 34 years old
+        - 09 - female, 21 years old
+        - 10 - male, 32 years old
+        - 11 - male, 26 years old
+        - 12 - male, 30 years old
+        - 13 - female, 32 years old
+        - 14 - female, 35 years old
+        - 15 - male, 25 years old
+        - 16 - female, 31 years old
 
-"""
-BASELINE
+    (The default split is chosen by myself for convience sake, paper used speaker-independent Leave-One-Speaker-Out (LOSO) 
+    or Leave-One-Speakers-Group-Out (LOSGO) cross-validation strategy)
+    """
 
-We preprocess the EMO-DB dataset here by roughly following the pipeline in the paper.
-For each audio file,
-    1. We extract the 3 channels of features: static log-Mel spectrogram, delta, and delta-delta.
-    2. We slice the features into 64-frame segments with a 30-frame shift, and assign the same emotion label to all segments from the same utterance.
+    train_speakers      : Sequence[str] = field(default_factory=lambda: ["03", "08", "09", "10", "11", "12", "13"])
+    validation_speakers : Sequence[str] = field(default_factory=lambda: ["14"])
+    test_speakers       : Sequence[str] = field(default_factory=lambda: ["15", "16"])
 
-We also split the dataset by speaker to prevent data leakage and overfitting, 
-as the model could learn speaker-specific features rather than emotion-specific features if the same speaker appeared in both training and testing sets.
+    def get_split_name(self, speaker_id: str) -> Optional[str]:
+        if speaker_id in self.train_speakers:
+            return "train"
+        if speaker_id in self.validation_speakers:
+            return "validation"
+        if speaker_id in self.test_speakers:
+            return "test"
+        return None
 
-We have 10 speakers in EMO-DB
-    03 - male, 31 years old
-    08 - female, 34 years
-    09 - female, 21 years
-    10 - male, 32 years
-    11 - male, 26 years
-    12 - male, 30 years
-    13 - female, 32 years
-    14 - female, 35 years
-    15 - male, 25 years
-    16 - female, 31 years
 
-We will use speakers 03, 08, 09, 10, 11, 12, 13 for training (7 speakers)
-Speaker 14 for validation (1 speaker)
-Speakers 15, 16 for testing (2 speakers)
-"""
+@dataclass(frozen=True)
+class FeatureConfig:
+    """
+    Configuration for feature extraction parameters.
+        - sampling_rate: Target sampling rate for audio loading (default 16 kHz).
+        - n_mels: Number of Mel bands for the spectrogram (default 64).
+        - window_ms: Window size in milliseconds for STFT (default 25 ms).
+        - hop_ms: Hop size in milliseconds for STFT (default 10 ms) - results in overlapping windows.
+        - segment_frames: Number of frames per segment for slicing (default 64 frames, which is 655 ms = 10 ms * 63 + 25 ms).
+        - frame_shift: Number of frames to shift for the next segment (default 30 frames, which is 300 ms = 10 ms * 30).
 
-def process_audio(file_path):
-    # The paper uses 16kHz sampling rate
-    y, sr = librosa.load(file_path, sr=16000)
+        (The default parameters are directly taken from the paper)
+    """
+    sampling_rate       : int = 16000
+    n_mels              : int = 64
+    window_ms           : float = 0.025
+    hop_ms              : float = 0.010
+    segment_frames      : int = 64
+    frame_shift         : int = 30
+
+
+@dataclass(frozen=True)
+class PreprocessConfig:
+    """
+    Configuration for the entire preprocessing pipeline.
+        - data_dir: Directory containing the raw EMO-DB wav files.
+        - output_dir: Directory to save the processed .npy files.
+        - normalize_speaker: Whether to apply speaker-wise normalization.
+        - strict_unknown_emotion: Whether to raise an error or skip files with unknown emotion codes.
+        - split_config: Configuration for train/validation/test split.
+        - feature_config: Configuration for feature extraction parameters.
+    """
+    data_dir                : str
+    output_dir              : str
+    normalize_speaker       : bool          = False
+    strict_unknown_emotion  : bool          = True
+    split_config            : SplitConfig   = field(default_factory=SplitConfig)
+    feature_config          : FeatureConfig = field(default_factory=FeatureConfig)
+
+
+def collect_utterances(
+        data_dir                : str, 
+        strict_unknown_emotion  : bool = True
+    ) -> List[Tuple[str, str, int, str]]:
+    """
+    Parse the EMO-DB directory and collect valid utterances with their metadata.
     
-    # Paper parameters: 25ms window, 10ms frame shift, 64 Mel-filter banks
-    hop_length = int(sr * 0.010) # 10ms
-    win_length = int(sr * 0.025) # 25ms
-    
-    # 1. Static Log Mel-spectrogram (Channel 1)
-    mel_spec = librosa.feature.melspectrogram(y=y, sr=sr, n_fft=win_length, 
-                                              hop_length=hop_length, n_mels=64)
-    log_mel = librosa.power_to_db(mel_spec, ref=np.max)
-    
-    # 2. Delta (Channel 2) and Delta-Delta (Channel 3) [cite: 203]
+    Return (filename, speaker_id, label, file_path) for valid EMO-DB utterances.
+    """
+    utterances: List[Tuple[str, str, int, str]] = []
+    for filename in sorted(os.listdir(data_dir)):
+        if not filename.endswith(".wav"):
+            continue
+
+        speaker_id = filename[:2]
+        emotion_code = filename[5]
+        if emotion_code not in EMOTION_CODE_MAP:
+            if strict_unknown_emotion:
+                raise ValueError(f"Unknown emotion code '{emotion_code}' in filename '{filename}'")
+            print(f"[WARN] Skipping file with unknown emotion code: {filename}")
+            continue
+
+        label = EMOTION_CODE_MAP[emotion_code]
+        utterances.append((filename, speaker_id, label, os.path.join(data_dir, filename)))
+    return utterances
+
+
+def extract_log_mel(
+        file_path   : str,
+        cfg         : FeatureConfig
+    ) -> np.ndarray:
+    """
+    Load the audio file and compute the log-Mel spectrogram.
+
+    Return a 2D array of shape (n_mels, time_frames) containing the log-Mel spectrogram.
+        - Rows are the Mel scale, which is a non-linear frequency scale (to approximate human auditory perception).
+        - Columns are time frames, determined by the window and hop sizes.
+        - Values are the log-scaled amplitude (loudness) of the Mel spectrogram (again to approximate human perception of loudness).
+
+    Note that the resulting log-Mel spectrogram is not yet segmented into fixed-size segments or stacked with delta features.
+
+    We later will have to split the time_frames into segments of segment_frames (e.g., 64 frames) 
+    with a certain frame_shift (e.g., 30 frames) to create the final input samples for the model.
+    """
+    y, sr = librosa.load(file_path, sr=cfg.sampling_rate)
+    hop_length = int(sr * cfg.hop_ms)
+    win_length = int(sr * cfg.window_ms)
+
+    mel_spec = librosa.feature.melspectrogram(
+        y           = y,
+        sr          = sr,
+        n_fft       = win_length,
+        hop_length  = hop_length,
+        n_mels      = cfg.n_mels,
+    )
+    return librosa.power_to_db(mel_spec, ref=np.max)
+
+
+def compute_speaker_stats(
+        utterance_mels: List[Tuple[str, str, int, np.ndarray]]
+    ) -> Dict[str, Dict[str, np.ndarray]]:
+    """
+    Compute mean and std for each speaker across all their utterances for speaker-wise normalization.
+    Here we are finding the mean and std for each Mel frequency bin across all time frames.
+    So we are finding the "average" log amplitude for each Mel bin (frequency) for that speaker.
+
+    Return a dictionary mapping speaker_id to their mean and std arrays, which can be used for z-score normalization later.
+    """
+    speaker_mels: Dict[str, List[np.ndarray]] = {}
+    for _, speaker_id, _, log_mel in utterance_mels:
+        speaker_mels.setdefault(speaker_id, []).append(log_mel)
+
+    speaker_stats: Dict[str, Dict[str, np.ndarray]] = {}
+    for speaker_id, mels in speaker_mels.items():
+        concatenated    = np.concatenate(mels, axis=1)
+        mean            = np.mean(concatenated, axis=1, keepdims=True)
+        std             = np.std(concatenated, axis=1, keepdims=True) + 1e-8
+        speaker_stats[speaker_id] = {"mean": mean, "std": std}
+    return speaker_stats
+
+
+def apply_speaker_normalization(
+    log_mel         : np.ndarray,
+    speaker_id      : str,
+    speaker_stats   : Optional[Dict[str, Dict[str, np.ndarray]]],
+    ) -> np.ndarray:
+    """
+    Apply speaker-wise z-score normalization to the log-Mel spectrogram for a single speaker
+     - If speaker_stats is None, return the original log-Mel without normalization.
+     - If speaker_stats is provided but does not contain the speaker_id, raise an error.
+    """
+    if speaker_stats is None:
+        return log_mel
+
+    stats = speaker_stats.get(speaker_id)
+    if stats is None:
+        raise ValueError(f"No speaker statistics found for speaker '{speaker_id}'")
+    return (log_mel - stats["mean"]) / stats["std"]
+
+
+def generate_variants(log_mel: np.ndarray) -> List[Tuple[str, np.ndarray]]:
+    """
+    Return feature variants for one utterance.
+
+    Extend this function to add data augmentation variants in future.
+    """
+    return [("base", log_mel)]
+
+
+def build_feature_tensor(log_mel: np.ndarray) -> np.ndarray:
+    """
+    Build a 3D feature tensor by stacking the log-Mel spectrogram with its first and second order deltas.
+    """
     delta = librosa.feature.delta(log_mel)
     delta2 = librosa.feature.delta(log_mel, order=2)
-    
-    # Stack into a (3, 64, time_steps) array
-    stacked_features = np.stack([log_mel, delta, delta2], axis=0)
-    
-    # 3. Slice into 64-frame segments with a 30-frame shift [cite: 195]
-    segment_frames = 64
-    frame_shift = 30
+    return np.stack([log_mel, delta, delta2], axis=0)
+
+
+def slice_segments(
+        stacked_features: np.ndarray, 
+        cfg             : FeatureConfig
+    ) -> List[np.ndarray]:
+    """
+    Slice the stacked feature tensor into overlapping segments of fixed size.
+        - stacked_features has shape (3, n_mels, time_frames)
+        - We want to slice along the time_frames dimension into segments of segment_frames (e.g., 64 frames) with a shift of frame_shift (e.g., 30 frames).
+        - This will create multiple segments for each utterance, which can help increase the number of training samples and capture temporal dynamics.
+        - The resulting segments will have shape (3, n_mels, segment_frames) and will be returned as a list.
+        - Note that some frames at the end may be discarded if they don't fit into a full segment.
+        - The paper does not specify how to handle the last few frames that don't fit into a full segment, so we will simply discard them for simplicity.
+    """
     total_frames = stacked_features.shape[2]
-    
-    segments = []
-    for start in range(0, total_frames - segment_frames + 1, frame_shift):
-        end = start + segment_frames
-        segment = stacked_features[:, :, start:end]
-        segments.append(segment)
-        
+    segments: List[np.ndarray] = []
+
+    for start in range(0, total_frames - cfg.segment_frames + 1, cfg.frame_shift):
+        end = start + cfg.segment_frames
+        segments.append(stacked_features[:, :, start:end])
     return segments
 
 
-
-X_train = []
-y_train = []
-utterance_id_train = [] # To keep track of which segment belongs to which audio file
-
-X_validation = []
-y_validation = []
-utterance_id_validation = [] # To keep track of which segment belongs to which audio file
-
-X_test = []
-y_test = []
-utterance_id_test = [] # To keep track of which segment belongs to which audio file
+def initialize_dataset_buffers() -> Dict[str, Dict[str, List]]:
+    return {
+        "train": {"X": [], "y": [], "utterance_ids": []},
+        "validation": {"X": [], "y": [], "utterance_ids": []},
+        "test": {"X": [], "y": [], "utterance_ids": []},
+    }
 
 
-train_speakers = ['03', '08', '09', '10', '11', '12', '13']
-validation_speakers = ['14']
-test_speakers = ['15', '16']
+def preprocess_emodb(config: PreprocessConfig) -> Dict[str, Dict[str, np.ndarray]]:
 
-for filename in os.listdir(DATA_DIR):
-    if filename.endswith(".wav"):
-        speaker_id      = filename[:2]  # e.g., '03' in 03a01Fa.wav
-        emotion_code    = filename[5]   # e.g., 'F' in 03a01Fa.wav
-        if emotion_code not in EMOTION_MAP: 
-            raise ValueError(f"Unknown emotion code '{emotion_code}' in filename '{filename}'")
-            
-        label = EMOTION_MAP[emotion_code]
-        segments = process_audio(os.path.join(DATA_DIR, filename))
-        
-        # We assign the same utterance label to every segment [cite: 402]
-        for seg in segments:
-            if speaker_id in train_speakers:
-                X_train.append(seg)
-                y_train.append(label)
-                utterance_id_train.append(filename)
+    # 1. We collect all valid utterances from the EMO-DB directory, extracting their filename, speaker ID, emotion label, and file path.
+    utterances = collect_utterances(
+        data_dir                = config.data_dir,
+        strict_unknown_emotion  = config.strict_unknown_emotion,
+    )
+    print(f"Found {len(utterances)} valid utterances in {config.data_dir}")
 
-            elif speaker_id in validation_speakers:
-                X_validation.append(seg)
-                y_validation.append(label)
-                utterance_id_validation.append(filename)
+    # 2. For each utterance, we extract the log-Mel spectrogram (2D matrix) and store it along with its metadata in a list.
+    utterance_mels: List[Tuple[str, str, int, np.ndarray]] = []
+    for filename, speaker_id, label, file_path in utterances:
+        log_mel = extract_log_mel(file_path, config.feature_config)
+        utterance_mels.append((filename, speaker_id, label, log_mel))
+
+    # 3. If speaker normalization is enabled, we compute the mean and std for each speaker across all their utterances to prepare for z-score normalization.
+    speaker_stats: Optional[Dict[str, Dict[str, np.ndarray]]] = None
+    if config.normalize_speaker:
+        print("Computing speaker-wise statistics...")
+        speaker_stats = compute_speaker_stats(utterance_mels)
+
+    # 4. For each utterance, we apply speaker normalization if enabled, 
+    #       generate feature variants (currently just the base log-Mel), 
+    #       build the stacked feature tensor (log-Mel + deltas), 
+    #       and slice it into segments. 
+    #       Each segment is then added to the appropriate dataset split based on the speaker ID.
+    datasets = initialize_dataset_buffers()
+    for filename, speaker_id, label, raw_log_mel in utterance_mels:
+        split_name = config.split_config.get_split_name(speaker_id)
+        if split_name is None:
+            continue
+
+        normalized_mel  = apply_speaker_normalization(raw_log_mel, speaker_id, speaker_stats)
+        variants        = generate_variants(normalized_mel)
+        for variant_name, variant_mel in variants:
+            stacked_features = build_feature_tensor(variant_mel)
+            segments = slice_segments(stacked_features, config.feature_config)
+            utterance_tag = filename if variant_name == "base" else f"{filename}|{variant_name}"
+            for segment in segments:
+                datasets[split_name]["X"].append(segment)
+                datasets[split_name]["y"].append(label)
+                datasets[split_name]["utterance_ids"].append(utterance_tag)
+
+    # 5. Finally, we convert the lists in each split to numpy arrays for efficient storage and return the processed datasets.
+    converted: Dict[str, Dict[str, np.ndarray]] = {}
+    for split_name in ["train", "validation", "test"]:
+        converted[split_name] = {
+            "X": np.array(datasets[split_name]["X"]),
+            "y": np.array(datasets[split_name]["y"]),
+            "utterance_ids": np.array(datasets[split_name]["utterance_ids"]),
+        }
+    return converted
 
 
-            elif speaker_id in test_speakers:
-                X_test.append(seg)
-                y_test.append(label)
-                utterance_id_test.append(filename)
+def save_datasets(output_dir: str, datasets: Dict[str, Dict[str, np.ndarray]]) -> None:
+    os.makedirs(output_dir, exist_ok=True)
+    for split_name in ["train", "validation", "test"]:
+        split = datasets[split_name]
+        np.save(os.path.join(output_dir, f"X_{split_name}.npy"), split["X"])
+        np.save(os.path.join(output_dir, f"y_{split_name}.npy"), split["y"])
+        np.save(os.path.join(output_dir, f"utterance_ids_{split_name}.npy"), split["utterance_ids"])
+        print(f"Saved {len(split['X'])} segments for {split_name} to {output_dir}")
 
 
-np.save(os.path.join(OUTPUT_DIR, "X_train.npy"), np.array(X_train))
-np.save(os.path.join(OUTPUT_DIR, "y_train.npy"), np.array(y_train))
-np.save(os.path.join(OUTPUT_DIR, "utterance_ids_train.npy"), np.array(utterance_id_train))
-print(f"Extracted {len(X_train)} segments for training!")
+def parse_args(default_data_dir: str, default_output_dir: str) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Unified EMO-DB feature extraction with optional speaker normalization.",
+        epilog=(
+            "Examples:\n"
+            "  python 1_extract_features_emodb.py --normalize-speaker --output-dir ./processed_emodb_speaker_norm\n"
+            "  python 1_extract_features_emodb.py --output-dir ./processed_emodb_og\n"
+            "  python 1_extract_features_emodb.py --interactive"
+        ),
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
+    parser.add_argument("--data-dir", default=default_data_dir, help="Path to EMO-DB wav folder.")
+    parser.add_argument("--output-dir", default=default_output_dir, help="Directory to save .npy outputs.")
+    parser.add_argument(
+        "--normalize-speaker",
+        action="store_true",
+        help="Apply speaker-wise z-score normalization before feature stacking.",
+    )
+    parser.add_argument(
+        "--interactive",
+        action="store_true",
+        help="Prompt for key options interactively.",
+    )
+    parser.add_argument(
+        "--skip-unknown-emotion",
+        action="store_true",
+        help="Skip files with unknown emotion code instead of raising an error.",
+    )
+    return parser.parse_args()
 
-np.save(os.path.join(OUTPUT_DIR, "X_validation.npy"), np.array(X_validation))
-np.save(os.path.join(OUTPUT_DIR, "y_validation.npy"), np.array(y_validation))
-np.save(os.path.join(OUTPUT_DIR, "utterance_ids_validation.npy"), np.array(utterance_id_validation))
-print(f"Extracted {len(X_validation)} segments for validation!")
 
-np.save(os.path.join(OUTPUT_DIR, "X_test.npy"), np.array(X_test))
-np.save(os.path.join(OUTPUT_DIR, "y_test.npy"), np.array(y_test))
-np.save(os.path.join(OUTPUT_DIR, "utterance_ids_test.npy"), np.array(utterance_id_test))
-print(f"Extracted {len(X_test)} segments for testing!")
+def ask_user_yes_no(question: str, default_yes: bool) -> bool:
+    default_hint = "Y/n" if default_yes else "y/N"
+    raw = input(f"{question} [{default_hint}]: ").strip().lower()
+    if not raw:
+        return default_yes
+    return raw in {"y", "yes"}
+
+
+def prompt_interactive(args: argparse.Namespace) -> argparse.Namespace:
+    print("Interactive mode enabled. Press Enter to keep defaults.")
+
+    data_dir = input(f"Data directory [{args.data_dir}]: ").strip()
+    if data_dir:
+        args.data_dir = data_dir
+
+    output_dir = input(f"Output directory [{args.output_dir}]: ").strip()
+    if output_dir:
+        args.output_dir = output_dir
+
+    args.normalize_speaker = ask_user_yes_no(
+        "Enable speaker-wise normalization?",
+        default_yes=args.normalize_speaker,
+    )
+    skip_unknown = ask_user_yes_no(
+        "Skip files with unknown emotion code?",
+        default_yes=args.skip_unknown_emotion,
+    )
+    args.skip_unknown_emotion = skip_unknown
+    return args
+
+
+def run_pipeline(args: argparse.Namespace) -> None:
+    config = PreprocessConfig(
+        data_dir                = os.path.abspath(args.data_dir),
+        output_dir              = os.path.abspath(args.output_dir),
+        normalize_speaker       = args.normalize_speaker,
+        strict_unknown_emotion  = not args.skip_unknown_emotion,
+    )
+
+    print("=" * 70)
+    print("EMO-DB preprocessing configuration")
+    print(f"data_dir            : {config.data_dir}")
+    print(f"output_dir          : {config.output_dir}")
+    print(f"normalize_speaker   : {config.normalize_speaker}")
+    print(f"strict_unknown_code : {config.strict_unknown_emotion}")
+    print("=" * 70)
+
+    datasets = preprocess_emodb(config)
+    save_datasets(config.output_dir, datasets)
+    print("Preprocessing completed.")
+
+
+def main() -> None:
+    curr_dir                = os.path.dirname(os.path.abspath(__file__))
+    default_data_dir        = os.path.join(curr_dir, "../emo_db/")
+    default_output_dir      = os.path.join(curr_dir, "./processed_emodb_og/")
+
+    args = parse_args(default_data_dir, default_output_dir)
+    if args.interactive:
+        args = prompt_interactive(args)
+
+    run_pipeline(args)
+
+
+if __name__ == "__main__":
+    main()
