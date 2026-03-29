@@ -6,10 +6,12 @@ from typing import Dict, List, Optional, Sequence, Tuple
 import librosa
 import numpy as np
 
-from utility import EMOTION_CODE_MAP
+from utility import EMOTION_CODE_MAP, EMOTION_ENG_MAP, augment_volume, add_matrix_noise, matrix_pitch_shift, freq_mask, matrix_time_stretch, time_mask
 
 
 np.random.seed(42)
+
+DEFAULT_SPEAKER_ORDER = ["03", "08", "09", "10", "11", "12", "13", "14", "15", "16"]
 
 
 @dataclass(frozen=True)
@@ -86,9 +88,31 @@ class PreprocessConfig:
     data_dir                : str
     output_dir              : str
     normalize_speaker       : bool          = False
+    augment_training        : bool          = False
     strict_unknown_emotion  : bool          = True
     split_config            : SplitConfig   = field(default_factory=SplitConfig)
     feature_config          : FeatureConfig = field(default_factory=FeatureConfig)
+
+
+def build_loso_split_configs(speaker_order: Sequence[str]) -> List[SplitConfig]:
+    """Create rotating LOSO-like folds with 1 test speaker, 1 validation speaker, and remaining train speakers."""
+    if len(speaker_order) < 3:
+        raise ValueError("Need at least 3 speakers to build LOSO folds with train/validation/test.")
+
+    folds: List[SplitConfig] = []
+    n = len(speaker_order)
+    for i in range(n):
+        test_speaker = speaker_order[i]
+        validation_speaker = speaker_order[(i + 1) % n]
+        train_speakers = [spk for spk in speaker_order if spk not in {test_speaker, validation_speaker}]
+        folds.append(
+            SplitConfig(
+                train_speakers      = train_speakers,
+                validation_speakers = [validation_speaker],
+                test_speakers       = [test_speaker],
+            )
+        )
+    return folds
 
 
 def collect_utterances(
@@ -168,6 +192,7 @@ def compute_speaker_stats(
         concatenated    = np.concatenate(mels, axis=1)
         mean            = np.mean(concatenated, axis=1, keepdims=True)
         std             = np.std(concatenated, axis=1, keepdims=True) + 1e-8
+
         speaker_stats[speaker_id] = {"mean": mean, "std": std}
     return speaker_stats
 
@@ -191,13 +216,41 @@ def apply_speaker_normalization(
     return (log_mel - stats["mean"]) / stats["std"]
 
 
-def generate_variants(log_mel: np.ndarray) -> List[Tuple[str, np.ndarray]]:
+def generate_variants(
+        log_mel         : np.ndarray, 
+        split_name      : str, 
+        augment_training: bool
+    ) -> List[Tuple[str, np.ndarray]]:
     """
     Return feature variants for one utterance.
 
-    Extend this function to add data augmentation variants in future.
+    If augmentation is enabled, generate 3 additional clones ONLY for training split:
+        1) identity_tweak: random pitch shift in [-3, +3] bins (excluding 0)
+        2) specaugment_tweak: one frequency mask + one time mask
+        3) environment_tweak: random volume shift + light gaussian noise
     """
-    return [("base", log_mel)]
+    variants: List[Tuple[str, np.ndarray]] = [("base", log_mel)]
+
+    if not augment_training or split_name != "train":
+        return variants
+
+    # Clone 1: identity tweak (pitch only)
+    shift_bins = np.random.randint(-3, 4)
+    if shift_bins == 0:
+        shift_bins = 1
+    variants.append(("identity_tweak", matrix_pitch_shift(log_mel, shift_bins=shift_bins)))
+
+    # Clone 2: specaugment tweak (freq mask + time mask)
+    specaug_mel = freq_mask(log_mel)
+    specaug_mel = time_mask(specaug_mel)
+    variants.append(("specaugment_tweak", specaug_mel))
+
+    # Clone 3: environment tweak (volume shift + noise)
+    env_mel = augment_volume(log_mel)
+    env_mel = add_matrix_noise(env_mel)
+    variants.append(("environment_tweak", env_mel))
+
+    return variants
 
 
 def build_feature_tensor(log_mel: np.ndarray) -> np.ndarray:
@@ -272,10 +325,16 @@ def preprocess_emodb(config: PreprocessConfig) -> Dict[str, Dict[str, np.ndarray
             continue
 
         normalized_mel  = apply_speaker_normalization(raw_log_mel, speaker_id, speaker_stats)
-        variants        = generate_variants(normalized_mel)
+        variants        = generate_variants(
+            normalized_mel,
+            split_name=split_name,
+            augment_training=config.augment_training,
+        )
+
         for variant_name, variant_mel in variants:
-            stacked_features = build_feature_tensor(variant_mel)
-            segments = slice_segments(stacked_features, config.feature_config)
+            stacked_features    = build_feature_tensor(variant_mel)
+            segments            = slice_segments(stacked_features, config.feature_config)
+
             utterance_tag = filename if variant_name == "base" else f"{filename}|{variant_name}"
             for segment in segments:
                 datasets[split_name]["X"].append(segment)
@@ -316,6 +375,7 @@ def parse_args(
             "Examples:\n"
             "  python 1_extract_features_emodb.py --normalize-speaker --output-dir ./processed_emodb_speaker_norm\n"
             "  python 1_extract_features_emodb.py --output-dir ./processed_emodb_og\n"
+            "  python 1_extract_features_emodb.py --split-mode loso --output-dir ./processed_emodb_og\n"
             "  python 1_extract_features_emodb.py --interactive"
         ),
         formatter_class=argparse.RawTextHelpFormatter,
@@ -340,6 +400,12 @@ def parse_args(
     )
 
     parser.add_argument(
+        "--augment-training",
+        action="store_true",
+        help="Generate 3 augmented clones for each training file (4x train data including base).",
+    )
+
+    parser.add_argument(
         "--interactive",
         action  = "store_true",
         help    = "Prompt for key options interactively.",
@@ -350,6 +416,14 @@ def parse_args(
         action  = "store_true",
         help    = "Skip files with unknown emotion code instead of raising an error.",
     )
+
+    parser.add_argument(
+        "--split-mode",
+        choices=["original", "loso"],
+        default="original",
+        help="Use original fixed speaker split or generate rotating LOSO folds.",
+    )
+
     return parser.parse_args()
 
 
@@ -380,11 +454,22 @@ def prompt_interactive(args: argparse.Namespace) -> argparse.Namespace:
         default_yes=args.normalize_speaker,
     )
 
+    args.augment_training = ask_user_yes_no(
+        "Enable training augmentation (3 clones per training file)?",
+        default_yes=args.augment_training,
+    )
+
     skip_unknown = ask_user_yes_no(
         "Skip files with unknown emotion code?",
         default_yes=args.skip_unknown_emotion,
     )
     args.skip_unknown_emotion = skip_unknown
+
+    use_loso = ask_user_yes_no(
+        "Use LOSO mode (10 rotating folds)?",
+        default_yes=(args.split_mode == "loso"),
+    )
+    args.split_mode = "loso" if use_loso else "original"
 
     return args
 
@@ -394,6 +479,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
         data_dir                = os.path.abspath(args.data_dir),
         output_dir              = os.path.abspath(args.output_dir),
         normalize_speaker       = args.normalize_speaker,
+        augment_training        = args.augment_training,
         strict_unknown_emotion  = not args.skip_unknown_emotion,
     )
 
@@ -402,13 +488,43 @@ def run_pipeline(args: argparse.Namespace) -> None:
     print(f"data_dir            : {config.data_dir}")
     print(f"output_dir          : {config.output_dir}")
     print(f"normalize_speaker   : {config.normalize_speaker}")
+    print(f"augment_training    : {config.augment_training}")
     print(f"strict_unknown_code : {config.strict_unknown_emotion}")
+    print(f"split_mode          : {args.split_mode}")
     print("=" * 70)
 
-    datasets = preprocess_emodb(config)
+    if args.split_mode == "original":
+        datasets = preprocess_emodb(config)
+        save_datasets(config.output_dir, datasets)
+        print("Preprocessing completed.")
+        return
 
-    save_datasets(config.output_dir, datasets)
-    print("Preprocessing completed.")
+    # LOSO mode: create fold1..fold10 under output_dir.
+    loso_folds = build_loso_split_configs(DEFAULT_SPEAKER_ORDER)
+    print(f"Generating {len(loso_folds)} LOSO folds in: {config.output_dir}")
+
+    for idx, split_cfg in enumerate(loso_folds, start=1):
+        fold_dir = os.path.join(config.output_dir, f"fold{idx}")
+        fold_config = PreprocessConfig(
+            data_dir                = config.data_dir,
+            output_dir              = fold_dir,
+            normalize_speaker       = config.normalize_speaker,
+            augment_training        = config.augment_training,
+            strict_unknown_emotion  = config.strict_unknown_emotion,
+            split_config            = split_cfg,
+            feature_config          = config.feature_config,
+        )
+
+        print("-" * 70)
+        print(
+            f"fold{idx}: test={split_cfg.test_speakers[0]}, "
+            f"validation={split_cfg.validation_speakers[0]}, "
+            f"train={len(split_cfg.train_speakers)} speakers"
+        )
+        datasets = preprocess_emodb(fold_config)
+        save_datasets(fold_dir, datasets)
+
+    print("LOSO preprocessing completed.")
 
 
 def main() -> None:
