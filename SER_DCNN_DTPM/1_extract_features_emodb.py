@@ -293,7 +293,10 @@ def preprocess_emodb(config: PreprocessConfig) -> Dict[str, Dict[str, np.ndarray
     return converted
 
 
-def save_datasets(output_dir: str, datasets: Dict[str, Dict[str, np.ndarray]]) -> None:
+def save_datasets(
+    output_dir  : str, 
+    datasets    : Dict[str, Dict[str, np.ndarray]]
+    ) -> None:
     os.makedirs(output_dir, exist_ok=True)
     for split_name in ["train", "validation", "test"]:
         split = datasets[split_name]
@@ -303,7 +306,10 @@ def save_datasets(output_dir: str, datasets: Dict[str, Dict[str, np.ndarray]]) -
         print(f"Saved {len(split['X'])} segments for {split_name} to {output_dir}")
 
 
-def parse_args(default_data_dir: str, default_output_dir: str) -> argparse.Namespace:
+def parse_args(
+        default_data_dir    : str, 
+        default_output_dir  : str
+    ) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Unified EMO-DB feature extraction with optional speaker normalization.",
         epilog=(
@@ -314,27 +320,43 @@ def parse_args(default_data_dir: str, default_output_dir: str) -> argparse.Names
         ),
         formatter_class=argparse.RawTextHelpFormatter,
     )
-    parser.add_argument("--data-dir", default=default_data_dir, help="Path to EMO-DB wav folder.")
-    parser.add_argument("--output-dir", default=default_output_dir, help="Directory to save .npy outputs.")
+
+    parser.add_argument(
+        "--data-dir", 
+        default = default_data_dir, 
+        help    = "Path to EMO-DB wav folder."
+    )
+
+    parser.add_argument(
+        "--output-dir", 
+        default = default_output_dir, 
+        help    = "Directory to save .npy outputs."
+    )
+
     parser.add_argument(
         "--normalize-speaker",
-        action="store_true",
-        help="Apply speaker-wise z-score normalization before feature stacking.",
+        action  = "store_true",
+        help    = "Apply speaker-wise z-score normalization before feature stacking.",
     )
+
     parser.add_argument(
         "--interactive",
-        action="store_true",
-        help="Prompt for key options interactively.",
+        action  = "store_true",
+        help    = "Prompt for key options interactively.",
     )
+
     parser.add_argument(
         "--skip-unknown-emotion",
-        action="store_true",
-        help="Skip files with unknown emotion code instead of raising an error.",
+        action  = "store_true",
+        help    = "Skip files with unknown emotion code instead of raising an error.",
     )
     return parser.parse_args()
 
 
-def ask_user_yes_no(question: str, default_yes: bool) -> bool:
+def ask_user_yes_no(
+        question    : str, 
+        default_yes : bool
+    ) -> bool:
     default_hint = "Y/n" if default_yes else "y/N"
     raw = input(f"{question} [{default_hint}]: ").strip().lower()
     if not raw:
@@ -357,11 +379,13 @@ def prompt_interactive(args: argparse.Namespace) -> argparse.Namespace:
         "Enable speaker-wise normalization?",
         default_yes=args.normalize_speaker,
     )
+
     skip_unknown = ask_user_yes_no(
         "Skip files with unknown emotion code?",
         default_yes=args.skip_unknown_emotion,
     )
     args.skip_unknown_emotion = skip_unknown
+
     return args
 
 
@@ -382,6 +406,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
     print("=" * 70)
 
     datasets = preprocess_emodb(config)
+
     save_datasets(config.output_dir, datasets)
     print("Preprocessing completed.")
 

@@ -1,19 +1,36 @@
-Epoch 1, Train Loss: 1.5391, Val Loss: 1.4000, Val Accuracy: 0.4860
+Dataset: processed_emodb_og
+Utterance-level accuracy (majority vote): 59.06%
+
+Utterance-level classification report:
+              precision    recall  f1-score   support
+
+           0       0.63      1.00      0.77        27
+           1       0.89      0.35      0.50        23
+           2       0.60      0.20      0.30        15
+           3       0.43      0.35      0.39        17
+           4       0.39      1.00      0.57        13
+           5       0.77      0.62      0.69        16
+           6       0.80      0.50      0.62        16
+
+    accuracy                           0.59       127
+   macro avg       0.64      0.58      0.55       127
+weighted avg       0.66      0.59      0.56       127
+
+
+DCNN training and test logs:
+Epoch 1, Train Loss: 0.8256, Val Loss: 1.2153, Val Accuracy: 0.5736
 Validation loss improved, model saved.
-Epoch 2, Train Loss: 1.2218, Val Loss: 1.1017, Val Accuracy: 0.5847
+Epoch 2, Train Loss: 0.8230, Val Loss: 0.9023, Val Accuracy: 0.6406
 Validation loss improved, model saved.
-Epoch 3, Train Loss: 1.1420, Val Loss: 1.0420, Val Accuracy: 0.5698
-Validation loss improved, model saved.
-Epoch 4, Train Loss: 0.9621, Val Loss: 0.9670, Val Accuracy: 0.6294
-Validation loss improved, model saved.
-Epoch 5, Train Loss: 0.9272, Val Loss: 1.3564, Val Accuracy: 0.5140
+Epoch 3, Train Loss: 0.7158, Val Loss: 0.9024, Val Accuracy: 0.6425
 Validation loss did not improve. Counter: 1/5
-Epoch 6, Train Loss: 0.7751, Val Loss: 1.0752, Val Accuracy: 0.6071
+Epoch 4, Train Loss: 0.6143, Val Loss: 1.1104, Val Accuracy: 0.6387
 Validation loss did not improve. Counter: 2/5
-Epoch 7, Train Loss: 0.6895, Val Loss: 0.9914, Val Accuracy: 0.5996
+Epoch 5, Train Loss: 0.5680, Val Loss: 1.1662, Val Accuracy: 0.5866
 Validation loss did not improve. Counter: 3/5
-Epoch 8, Train Loss: 0.6546, Val Loss: 1.1222, Val Accuracy: 0.6350
+Epoch 6, Train Loss: 0.5126, Val Loss: 1.1256, Val Accuracy: 0.6015
 Validation loss did not improve. Counter: 4/5
-Epoch 9, Train Loss: 0.5263, Val Loss: 1.1077, Val Accuracy: 0.6648
+Epoch 7, Train Loss: 0.4071, Val Loss: 1.0686, Val Accuracy: 0.6480
 Validation loss did not improve. Counter: 5/5
 Validation loss increased, stopping early.
+Test Loss: 1.2471, Test Accuracy: 0.5398
