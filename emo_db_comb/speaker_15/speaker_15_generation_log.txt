@@ -1,0 +1,486 @@
+speaker_id: 15
+speaker_age: 25
+generated_files: 56
+================================================================================
+[1] generated: 15AWFW001.wav
+    emotion_codes: A -> W -> F -> W
+    emotion_names: fear -> anger -> happiness -> anger
+    source_files:
+      - 15a02Ac.wav
+      - 15a04Wa.wav
+      - 15a07Fa.wav
+      - 15b09Wb.wav
+--------------------------------------------------------------------------------
+[2] generated: 15FNEL002.wav
+    emotion_codes: F -> N -> E -> L
+    emotion_names: happiness -> neutral -> disgust -> boredom
+    source_files:
+      - 15a01Fb.wav
+      - 15a01Nb.wav
+      - 15a05Eb.wav
+      - 15b10Lc.wav
+--------------------------------------------------------------------------------
+[3] generated: 15WWW003.wav
+    emotion_codes: W -> W -> W
+    emotion_names: anger -> anger -> anger
+    source_files:
+      - 15a02Wd.wav
+      - 15a04Wa.wav
+      - 15b10Wa.wav
+--------------------------------------------------------------------------------
+[4] generated: 15ENWW004.wav
+    emotion_codes: E -> N -> W -> W
+    emotion_names: disgust -> neutral -> anger -> anger
+    source_files:
+      - 15a02Ea.wav
+      - 15b03Nb.wav
+      - 15b03Wa.wav
+      - 15b03Wb.wav
+--------------------------------------------------------------------------------
+[5] generated: 15LNLA005.wav
+    emotion_codes: L -> N -> L -> A
+    emotion_names: boredom -> neutral -> boredom -> fear
+    source_files:
+      - 15a02La.wav
+      - 15a07Nc.wav
+      - 15b01Lb.wav
+      - 15b02Aa.wav
+--------------------------------------------------------------------------------
+[6] generated: 15AN006.wav
+    emotion_codes: A -> N
+    emotion_names: fear -> neutral
+    source_files:
+      - 15a04Ab.wav
+      - 15b02Nd.wav
+--------------------------------------------------------------------------------
+[7] generated: 15ENT007.wav
+    emotion_codes: E -> N -> T
+    emotion_names: disgust -> neutral -> sadness
+    source_files:
+      - 15a07Eb.wav
+      - 15b02Nd.wav
+      - 15b03Tc.wav
+--------------------------------------------------------------------------------
+[8] generated: 15TW008.wav
+    emotion_codes: T -> W
+    emotion_names: sadness -> anger
+    source_files:
+      - 15b02Tc.wav
+      - 15b09Wb.wav
+--------------------------------------------------------------------------------
+[9] generated: 15WALN009.wav
+    emotion_codes: W -> A -> L -> N
+    emotion_names: anger -> fear -> boredom -> neutral
+    source_files:
+      - 15a02Wb.wav
+      - 15a07Ac.wav
+      - 15b01Lb.wav
+      - 15b10Nb.wav
+--------------------------------------------------------------------------------
+[10] generated: 15LEAW010.wav
+    emotion_codes: L -> E -> A -> W
+    emotion_names: boredom -> disgust -> fear -> anger
+    source_files:
+      - 15a07Ld.wav
+      - 15b01Ec.wav
+      - 15b02Aa.wav
+      - 15b09Wb.wav
+--------------------------------------------------------------------------------
+[11] generated: 15ANW011.wav
+    emotion_codes: A -> N -> W
+    emotion_names: fear -> neutral -> anger
+    source_files:
+      - 15a04Ac.wav
+      - 15a04Nc.wav
+      - 15a04Wa.wav
+--------------------------------------------------------------------------------
+[12] generated: 15LTWW012.wav
+    emotion_codes: L -> T -> W -> W
+    emotion_names: boredom -> sadness -> anger -> anger
+    source_files:
+      - 15a01La.wav
+      - 15a02Ta.wav
+      - 15b01Wc.wav
+      - 15b09Wb.wav
+--------------------------------------------------------------------------------
+[13] generated: 15NNT013.wav
+    emotion_codes: N -> N -> T
+    emotion_names: neutral -> neutral -> sadness
+    source_files:
+      - 15a02Na.wav
+      - 15a07Nc.wav
+      - 15b09Ta.wav
+--------------------------------------------------------------------------------
+[14] generated: 15WFFN014.wav
+    emotion_codes: W -> F -> F -> N
+    emotion_names: anger -> happiness -> happiness -> neutral
+    source_files:
+      - 15a01Wa.wav
+      - 15a07Fa.wav
+      - 15a07Fb.wav
+      - 15b03Nb.wav
+--------------------------------------------------------------------------------
+[15] generated: 15LNN015.wav
+    emotion_codes: L -> N -> N
+    emotion_names: boredom -> neutral -> neutral
+    source_files:
+      - 15a01La.wav
+      - 15a04Nc.wav
+      - 15b01Na.wav
+--------------------------------------------------------------------------------
+[16] generated: 15NWAW016.wav
+    emotion_codes: N -> W -> A -> W
+    emotion_names: neutral -> anger -> fear -> anger
+    source_files:
+      - 15a01Nb.wav
+      - 15a04Wa.wav
+      - 15b03Aa.wav
+      - 15b03Wa.wav
+--------------------------------------------------------------------------------
+[17] generated: 15ELL017.wav
+    emotion_codes: E -> L -> L
+    emotion_names: disgust -> boredom -> boredom
+    source_files:
+      - 15a05Eb.wav
+      - 15a05Lb.wav
+      - 15b02Lb.wav
+--------------------------------------------------------------------------------
+[18] generated: 15NWW018.wav
+    emotion_codes: N -> W -> W
+    emotion_names: neutral -> anger -> anger
+    source_files:
+      - 15a05Na.wav
+      - 15b03Wa.wav
+      - 15b03Wb.wav
+--------------------------------------------------------------------------------
+[19] generated: 15WWNN019.wav
+    emotion_codes: W -> W -> N -> N
+    emotion_names: anger -> anger -> neutral -> neutral
+    source_files:
+      - 15a04Wa.wav
+      - 15a05Wa.wav
+      - 15b02Nd.wav
+      - 15b09Nb.wav
+--------------------------------------------------------------------------------
+[20] generated: 15WF020.wav
+    emotion_codes: W -> F
+    emotion_names: anger -> happiness
+    source_files:
+      - 15a01Wa.wav
+      - 15a07Fa.wav
+--------------------------------------------------------------------------------
+[21] generated: 15FWL021.wav
+    emotion_codes: F -> W -> L
+    emotion_names: happiness -> anger -> boredom
+    source_files:
+      - 15a01Fb.wav
+      - 15b09Wb.wav
+      - 15b10Lc.wav
+--------------------------------------------------------------------------------
+[22] generated: 15FNEL022.wav
+    emotion_codes: F -> N -> E -> L
+    emotion_names: happiness -> neutral -> disgust -> boredom
+    source_files:
+      - 15a01Fb.wav
+      - 15a05Na.wav
+      - 15b01Ec.wav
+      - 15b01Lb.wav
+--------------------------------------------------------------------------------
+[23] generated: 15ETWN023.wav
+    emotion_codes: E -> T -> W -> N
+    emotion_names: disgust -> sadness -> anger -> neutral
+    source_files:
+      - 15a07Eb.wav
+      - 15b03Tc.wav
+      - 15b09Wb.wav
+      - 15b10Nc.wav
+--------------------------------------------------------------------------------
+[24] generated: 15NANA024.wav
+    emotion_codes: N -> A -> N -> A
+    emotion_names: neutral -> fear -> neutral -> fear
+    source_files:
+      - 15a02Na.wav
+      - 15a04Ac.wav
+      - 15b03Nb.wav
+      - 15b10Ac.wav
+--------------------------------------------------------------------------------
+[25] generated: 15LNLW025.wav
+    emotion_codes: L -> N -> L -> W
+    emotion_names: boredom -> neutral -> boredom -> anger
+    source_files:
+      - 15a01La.wav
+      - 15a02Na.wav
+      - 15b01Lb.wav
+      - 15b03Wb.wav
+--------------------------------------------------------------------------------
+[26] generated: 15FNWN026.wav
+    emotion_codes: F -> N -> W -> N
+    emotion_names: happiness -> neutral -> anger -> neutral
+    source_files:
+      - 15a01Fb.wav
+      - 15a05Na.wav
+      - 15a05Wa.wav
+      - 15b10Nc.wav
+--------------------------------------------------------------------------------
+[27] generated: 15WAWN027.wav
+    emotion_codes: W -> A -> W -> N
+    emotion_names: anger -> fear -> anger -> neutral
+    source_files:
+      - 15a05Wa.wav
+      - 15b03Aa.wav
+      - 15b03Wb.wav
+      - 15b09Nb.wav
+--------------------------------------------------------------------------------
+[28] generated: 15AWTA028.wav
+    emotion_codes: A -> W -> T -> A
+    emotion_names: fear -> anger -> sadness -> fear
+    source_files:
+      - 15a07Ac.wav
+      - 15b01Wc.wav
+      - 15b03Tc.wav
+      - 15b09Ac.wav
+--------------------------------------------------------------------------------
+[29] generated: 15AW029.wav
+    emotion_codes: A -> W
+    emotion_names: fear -> anger
+    source_files:
+      - 15a02Ac.wav
+      - 15b03Wa.wav
+--------------------------------------------------------------------------------
+[30] generated: 15AFFT030.wav
+    emotion_codes: A -> F -> F -> T
+    emotion_names: fear -> happiness -> happiness -> sadness
+    source_files:
+      - 15a04Ab.wav
+      - 15a05Fb.wav
+      - 15a07Fa.wav
+      - 15b09Ta.wav
+--------------------------------------------------------------------------------
+[31] generated: 15NLLA031.wav
+    emotion_codes: N -> L -> L -> A
+    emotion_names: neutral -> boredom -> boredom -> fear
+    source_files:
+      - 15a07Nc.wav
+      - 15b02Lb.wav
+      - 15b03Lc.wav
+      - 15b10Ac.wav
+--------------------------------------------------------------------------------
+[32] generated: 15ALFL032.wav
+    emotion_codes: A -> L -> F -> L
+    emotion_names: fear -> boredom -> happiness -> boredom
+    source_files:
+      - 15a02Ac.wav
+      - 15a05Lb.wav
+      - 15a07Fa.wav
+      - 15a07Ld.wav
+--------------------------------------------------------------------------------
+[33] generated: 15FFWW033.wav
+    emotion_codes: F -> F -> W -> W
+    emotion_names: happiness -> happiness -> anger -> anger
+    source_files:
+      - 15a04Fd.wav
+      - 15a05Fb.wav
+      - 15b01Wc.wav
+      - 15b10Wa.wav
+--------------------------------------------------------------------------------
+[34] generated: 15FWNF034.wav
+    emotion_codes: F -> W -> N -> F
+    emotion_names: happiness -> anger -> neutral -> happiness
+    source_files:
+      - 15a01Fb.wav
+      - 15a01Wa.wav
+      - 15a02Na.wav
+      - 15b09Fa.wav
+--------------------------------------------------------------------------------
+[35] generated: 15LEAL035.wav
+    emotion_codes: L -> E -> A -> L
+    emotion_names: boredom -> disgust -> fear -> boredom
+    source_files:
+      - 15a01La.wav
+      - 15a02Ea.wav
+      - 15b02Aa.wav
+      - 15b02Lb.wav
+--------------------------------------------------------------------------------
+[36] generated: 15FNEL036.wav
+    emotion_codes: F -> N -> E -> L
+    emotion_names: happiness -> neutral -> disgust -> boredom
+    source_files:
+      - 15a01Fb.wav
+      - 15a04Nc.wav
+      - 15b01Ec.wav
+      - 15b01Lb.wav
+--------------------------------------------------------------------------------
+[37] generated: 15FW037.wav
+    emotion_codes: F -> W
+    emotion_names: happiness -> anger
+    source_files:
+      - 15a07Fb.wav
+      - 15b03Wb.wav
+--------------------------------------------------------------------------------
+[38] generated: 15AWTN038.wav
+    emotion_codes: A -> W -> T -> N
+    emotion_names: fear -> anger -> sadness -> neutral
+    source_files:
+      - 15a02Ac.wav
+      - 15a04Wa.wav
+      - 15b02Tc.wav
+      - 15b10Nc.wav
+--------------------------------------------------------------------------------
+[39] generated: 15NFWN039.wav
+    emotion_codes: N -> F -> W -> N
+    emotion_names: neutral -> happiness -> anger -> neutral
+    source_files:
+      - 15a01Nb.wav
+      - 15a07Fb.wav
+      - 15b01Wc.wav
+      - 15b10Nc.wav
+--------------------------------------------------------------------------------
+[40] generated: 15WTF040.wav
+    emotion_codes: W -> T -> F
+    emotion_names: anger -> sadness -> happiness
+    source_files:
+      - 15b01Wc.wav
+      - 15b02Tc.wav
+      - 15b09Fa.wav
+--------------------------------------------------------------------------------
+[41] generated: 15ALWW041.wav
+    emotion_codes: A -> L -> W -> W
+    emotion_names: fear -> boredom -> anger -> anger
+    source_files:
+      - 15a04Ab.wav
+      - 15a05Lb.wav
+      - 15b01Wc.wav
+      - 15b02Wa.wav
+--------------------------------------------------------------------------------
+[42] generated: 15AFAL042.wav
+    emotion_codes: A -> F -> A -> L
+    emotion_names: fear -> happiness -> fear -> boredom
+    source_files:
+      - 15a04Ab.wav
+      - 15a04Fd.wav
+      - 15b03Aa.wav
+      - 15b10Lc.wav
+--------------------------------------------------------------------------------
+[43] generated: 15WAN043.wav
+    emotion_codes: W -> A -> N
+    emotion_names: anger -> fear -> neutral
+    source_files:
+      - 15b01Wc.wav
+      - 15b02Aa.wav
+      - 15b10Nc.wav
+--------------------------------------------------------------------------------
+[44] generated: 15WWNL044.wav
+    emotion_codes: W -> W -> N -> L
+    emotion_names: anger -> anger -> neutral -> boredom
+    source_files:
+      - 15a04Wa.wav
+      - 15b01Wc.wav
+      - 15b03Nb.wav
+      - 15b09La.wav
+--------------------------------------------------------------------------------
+[45] generated: 15TWFN045.wav
+    emotion_codes: T -> W -> F -> N
+    emotion_names: sadness -> anger -> happiness -> neutral
+    source_files:
+      - 15a02Ta.wav
+      - 15a02Wd.wav
+      - 15a07Fb.wav
+      - 15a07Nc.wav
+--------------------------------------------------------------------------------
+[46] generated: 15LLEW046.wav
+    emotion_codes: L -> L -> E -> W
+    emotion_names: boredom -> boredom -> disgust -> anger
+    source_files:
+      - 15a01La.wav
+      - 15a05Lb.wav
+      - 15a07Eb.wav
+      - 15b10Wa.wav
+--------------------------------------------------------------------------------
+[47] generated: 15FFFE047.wav
+    emotion_codes: F -> F -> F -> E
+    emotion_names: happiness -> happiness -> happiness -> disgust
+    source_files:
+      - 15a01Fb.wav
+      - 15a05Fb.wav
+      - 15a07Fa.wav
+      - 15b01Ec.wav
+--------------------------------------------------------------------------------
+[48] generated: 15AFNN048.wav
+    emotion_codes: A -> F -> N -> N
+    emotion_names: fear -> happiness -> neutral -> neutral
+    source_files:
+      - 15a04Ab.wav
+      - 15a04Fd.wav
+      - 15b03Nb.wav
+      - 15b10Nb.wav
+--------------------------------------------------------------------------------
+[49] generated: 15LNL049.wav
+    emotion_codes: L -> N -> L
+    emotion_names: boredom -> neutral -> boredom
+    source_files:
+      - 15a02La.wav
+      - 15b01Na.wav
+      - 15b09La.wav
+--------------------------------------------------------------------------------
+[50] generated: 15NNWN050.wav
+    emotion_codes: N -> N -> W -> N
+    emotion_names: neutral -> neutral -> anger -> neutral
+    source_files:
+      - 15a01Nb.wav
+      - 15a04Nc.wav
+      - 15b01Wc.wav
+      - 15b02Nd.wav
+--------------------------------------------------------------------------------
+[51] generated: 15AWN051.wav
+    emotion_codes: A -> W -> N
+    emotion_names: fear -> anger -> neutral
+    source_files:
+      - 15b03Aa.wav
+      - 15b03Wb.wav
+      - 15b10Nc.wav
+--------------------------------------------------------------------------------
+[52] generated: 15NWWN052.wav
+    emotion_codes: N -> W -> W -> N
+    emotion_names: neutral -> anger -> anger -> neutral
+    source_files:
+      - 15a01Nb.wav
+      - 15a02Wd.wav
+      - 15a04Wa.wav
+      - 15b02Nd.wav
+--------------------------------------------------------------------------------
+[53] generated: 15LNLN053.wav
+    emotion_codes: L -> N -> L -> N
+    emotion_names: boredom -> neutral -> boredom -> neutral
+    source_files:
+      - 15a02La.wav
+      - 15a05Na.wav
+      - 15a07Ld.wav
+      - 15b01Na.wav
+--------------------------------------------------------------------------------
+[54] generated: 15WTNN054.wav
+    emotion_codes: W -> T -> N -> N
+    emotion_names: anger -> sadness -> neutral -> neutral
+    source_files:
+      - 15a01Wa.wav
+      - 15a02Ta.wav
+      - 15b01Na.wav
+      - 15b10Nc.wav
+--------------------------------------------------------------------------------
+[55] generated: 15LWTE055.wav
+    emotion_codes: L -> W -> T -> E
+    emotion_names: boredom -> anger -> sadness -> disgust
+    source_files:
+      - 15a01La.wav
+      - 15a01Wa.wav
+      - 15a02Ta.wav
+      - 15a05Eb.wav
+--------------------------------------------------------------------------------
+[56] generated: 15NNTL056.wav
+    emotion_codes: N -> N -> T -> L
+    emotion_names: neutral -> neutral -> sadness -> boredom
+    source_files:
+      - 15a04Nc.wav
+      - 15a07Nc.wav
+      - 15b02Tc.wav
+      - 15b03Lc.wav
+--------------------------------------------------------------------------------
