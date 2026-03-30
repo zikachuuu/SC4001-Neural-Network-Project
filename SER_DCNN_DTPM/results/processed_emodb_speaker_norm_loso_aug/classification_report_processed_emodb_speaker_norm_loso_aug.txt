@@ -1,0 +1,58 @@
+Running SVM in LOSO mode (train/evaluate per fold)...
+----------------------------------------------------------------------
+Fold: fold1
+Fold utterance-level SVM accuracy: 85.71%
+Saved fold SVM to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/svm_processed_emodb_speaker_norm_loso_aug_fold1.joblib
+----------------------------------------------------------------------
+Fold: fold10
+Fold utterance-level SVM accuracy: 84.51%
+Saved fold SVM to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/svm_processed_emodb_speaker_norm_loso_aug_fold10.joblib
+----------------------------------------------------------------------
+Fold: fold2
+Fold utterance-level SVM accuracy: 72.41%
+Saved fold SVM to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/svm_processed_emodb_speaker_norm_loso_aug_fold2.joblib
+----------------------------------------------------------------------
+Fold: fold3
+Fold utterance-level SVM accuracy: 90.70%
+Saved fold SVM to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/svm_processed_emodb_speaker_norm_loso_aug_fold3.joblib
+----------------------------------------------------------------------
+Fold: fold4
+Fold utterance-level SVM accuracy: 65.79%
+Saved fold SVM to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/svm_processed_emodb_speaker_norm_loso_aug_fold4.joblib
+----------------------------------------------------------------------
+Fold: fold5
+Fold utterance-level SVM accuracy: 74.55%
+Saved fold SVM to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/svm_processed_emodb_speaker_norm_loso_aug_fold5.joblib
+----------------------------------------------------------------------
+Fold: fold6
+Fold utterance-level SVM accuracy: 88.57%
+Saved fold SVM to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/svm_processed_emodb_speaker_norm_loso_aug_fold6.joblib
+----------------------------------------------------------------------
+Fold: fold7
+Fold utterance-level SVM accuracy: 78.69%
+Saved fold SVM to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/svm_processed_emodb_speaker_norm_loso_aug_fold7.joblib
+----------------------------------------------------------------------
+Fold: fold8
+Fold utterance-level SVM accuracy: 86.96%
+Saved fold SVM to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/svm_processed_emodb_speaker_norm_loso_aug_fold8.joblib
+----------------------------------------------------------------------
+Fold: fold9
+Fold utterance-level SVM accuracy: 67.86%
+Saved fold SVM to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/svm_processed_emodb_speaker_norm_loso_aug_fold9.joblib
+======================================================================
+Final SVM utterance-level accuracy (loso): 79.63%
+Final SVM classification report:
+              precision    recall  f1-score   support
+
+           0       0.80      0.90      0.85       127
+           1       0.82      0.81      0.82        81
+           2       0.75      0.55      0.63        69
+           3       0.65      0.69      0.67        71
+           4       0.93      1.00      0.96        62
+           5       0.70      0.70      0.70        46
+           6       0.88      0.82      0.85        79
+
+    accuracy                           0.80       535
+   macro avg       0.79      0.78      0.78       535
+weighted avg       0.80      0.80      0.79       535
+

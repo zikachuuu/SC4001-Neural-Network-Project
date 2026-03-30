@@ -1,0 +1,301 @@
+Dataset: processed_emodb_speaker_norm_loso
+Split mode: loso
+Utterance-level accuracy: 68.97%
+
+Utterance-level classification report:
+              precision    recall  f1-score   support
+
+           0       0.68      0.93      0.78       127
+           1       0.60      0.65      0.63        81
+           2       0.81      0.49      0.61        69
+           3       0.66      0.35      0.46        71
+           4       0.85      0.94      0.89        62
+           5       0.50      0.70      0.58        46
+           6       0.80      0.62      0.70        79
+
+    accuracy                           0.69       535
+   macro avg       0.70      0.67      0.67       535
+weighted avg       0.70      0.69      0.68       535
+
+
+DCNN training and test logs:
+======================================================================
+Running fold: fold1
+Epoch 1, Train Loss: 1.4944, Val Loss: 1.2734, Val Accuracy: 0.4859
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold1.pth
+Epoch 2, Train Loss: 1.0838, Val Loss: 1.3412, Val Accuracy: 0.5181
+Validation loss did not improve. Counter: 1/5
+Epoch 3, Train Loss: 0.9670, Val Loss: 1.1365, Val Accuracy: 0.5622
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold1.pth
+Epoch 4, Train Loss: 0.8212, Val Loss: 1.3641, Val Accuracy: 0.5924
+Validation loss did not improve. Counter: 1/5
+Epoch 5, Train Loss: 0.7235, Val Loss: 1.1959, Val Accuracy: 0.5683
+Validation loss did not improve. Counter: 2/5
+Epoch 6, Train Loss: 0.6306, Val Loss: 1.1168, Val Accuracy: 0.6365
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold1.pth
+Epoch 7, Train Loss: 0.5915, Val Loss: 1.4344, Val Accuracy: 0.5843
+Validation loss did not improve. Counter: 1/5
+Epoch 8, Train Loss: 0.5288, Val Loss: 1.4771, Val Accuracy: 0.5763
+Validation loss did not improve. Counter: 2/5
+Epoch 9, Train Loss: 0.4848, Val Loss: 1.4612, Val Accuracy: 0.5964
+Validation loss did not improve. Counter: 3/5
+Epoch 10, Train Loss: 0.3814, Val Loss: 1.0998, Val Accuracy: 0.6687
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold1.pth
+Epoch 11, Train Loss: 0.3609, Val Loss: 1.9659, Val Accuracy: 0.5763
+Validation loss did not improve. Counter: 1/5
+Epoch 12, Train Loss: 0.2848, Val Loss: 1.6044, Val Accuracy: 0.6064
+Validation loss did not improve. Counter: 2/5
+Epoch 13, Train Loss: 0.2527, Val Loss: 1.3313, Val Accuracy: 0.6406
+Validation loss did not improve. Counter: 3/5
+Epoch 14, Train Loss: 0.2578, Val Loss: 1.8343, Val Accuracy: 0.6024
+Validation loss did not improve. Counter: 4/5
+Epoch 15, Train Loss: 0.2336, Val Loss: 1.9495, Val Accuracy: 0.6004
+Validation loss did not improve. Counter: 5/5
+Validation loss increased, stopping early.
+Fold fold1 utterance-level accuracy: 63.27% (49 utterances)
+======================================================================
+Running fold: fold10
+Epoch 1, Train Loss: 1.4863, Val Loss: 1.2154, Val Accuracy: 0.5565
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold10.pth
+Epoch 2, Train Loss: 1.1396, Val Loss: 1.2275, Val Accuracy: 0.5169
+Validation loss did not improve. Counter: 1/5
+Epoch 3, Train Loss: 0.9917, Val Loss: 0.9789, Val Accuracy: 0.5876
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold10.pth
+Epoch 4, Train Loss: 0.8332, Val Loss: 0.8920, Val Accuracy: 0.6412
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold10.pth
+Epoch 5, Train Loss: 0.7895, Val Loss: 0.9311, Val Accuracy: 0.6469
+Validation loss did not improve. Counter: 1/5
+Epoch 6, Train Loss: 0.6689, Val Loss: 0.9581, Val Accuracy: 0.6271
+Validation loss did not improve. Counter: 2/5
+Epoch 7, Train Loss: 0.5980, Val Loss: 0.9930, Val Accuracy: 0.5904
+Validation loss did not improve. Counter: 3/5
+Epoch 8, Train Loss: 0.5208, Val Loss: 0.9446, Val Accuracy: 0.6441
+Validation loss did not improve. Counter: 4/5
+Epoch 9, Train Loss: 0.4320, Val Loss: 0.9767, Val Accuracy: 0.6045
+Validation loss did not improve. Counter: 5/5
+Validation loss increased, stopping early.
+Fold fold10 utterance-level accuracy: 67.61% (71 utterances)
+======================================================================
+Running fold: fold2
+Epoch 1, Train Loss: 1.5054, Val Loss: 1.2196, Val Accuracy: 0.5294
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold2.pth
+Epoch 2, Train Loss: 1.1388, Val Loss: 1.0046, Val Accuracy: 0.6099
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold2.pth
+Epoch 3, Train Loss: 0.9772, Val Loss: 1.2921, Val Accuracy: 0.5294
+Validation loss did not improve. Counter: 1/5
+Epoch 4, Train Loss: 0.8556, Val Loss: 1.0079, Val Accuracy: 0.6347
+Validation loss did not improve. Counter: 2/5
+Epoch 5, Train Loss: 0.7252, Val Loss: 1.2448, Val Accuracy: 0.5573
+Validation loss did not improve. Counter: 3/5
+Epoch 6, Train Loss: 0.6759, Val Loss: 1.0910, Val Accuracy: 0.6099
+Validation loss did not improve. Counter: 4/5
+Epoch 7, Train Loss: 0.6470, Val Loss: 1.0214, Val Accuracy: 0.6656
+Validation loss did not improve. Counter: 5/5
+Validation loss increased, stopping early.
+Fold fold2 utterance-level accuracy: 50.00% (58 utterances)
+======================================================================
+Running fold: fold3
+Epoch 1, Train Loss: 1.4605, Val Loss: 1.2255, Val Accuracy: 0.4568
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold3.pth
+Epoch 2, Train Loss: 1.1028, Val Loss: 1.4912, Val Accuracy: 0.4321
+Validation loss did not improve. Counter: 1/5
+Epoch 3, Train Loss: 0.9300, Val Loss: 1.9636, Val Accuracy: 0.3786
+Validation loss did not improve. Counter: 2/5
+Epoch 4, Train Loss: 0.9649, Val Loss: 1.0399, Val Accuracy: 0.5720
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold3.pth
+Epoch 5, Train Loss: 0.7691, Val Loss: 1.0584, Val Accuracy: 0.5679
+Validation loss did not improve. Counter: 1/5
+Epoch 6, Train Loss: 0.6464, Val Loss: 1.5060, Val Accuracy: 0.4527
+Validation loss did not improve. Counter: 2/5
+Epoch 7, Train Loss: 0.5911, Val Loss: 1.1998, Val Accuracy: 0.5679
+Validation loss did not improve. Counter: 3/5
+Epoch 8, Train Loss: 0.5452, Val Loss: 1.4799, Val Accuracy: 0.4403
+Validation loss did not improve. Counter: 4/5
+Epoch 9, Train Loss: 0.4783, Val Loss: 1.0086, Val Accuracy: 0.6173
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold3.pth
+Epoch 10, Train Loss: 0.3830, Val Loss: 1.0441, Val Accuracy: 0.6379
+Validation loss did not improve. Counter: 1/5
+Epoch 11, Train Loss: 0.3855, Val Loss: 1.1428, Val Accuracy: 0.6173
+Validation loss did not improve. Counter: 2/5
+Epoch 12, Train Loss: 0.2914, Val Loss: 1.1514, Val Accuracy: 0.6049
+Validation loss did not improve. Counter: 3/5
+Epoch 13, Train Loss: 0.3081, Val Loss: 1.6262, Val Accuracy: 0.5432
+Validation loss did not improve. Counter: 4/5
+Epoch 14, Train Loss: 0.2390, Val Loss: 1.3867, Val Accuracy: 0.5844
+Validation loss did not improve. Counter: 5/5
+Validation loss increased, stopping early.
+Fold fold3 utterance-level accuracy: 81.40% (43 utterances)
+======================================================================
+Running fold: fold4
+Epoch 1, Train Loss: 1.4565, Val Loss: 1.5417, Val Accuracy: 0.4253
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold4.pth
+Epoch 2, Train Loss: 1.1173, Val Loss: 1.1516, Val Accuracy: 0.5611
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold4.pth
+Epoch 3, Train Loss: 0.9231, Val Loss: 1.3518, Val Accuracy: 0.4955
+Validation loss did not improve. Counter: 1/5
+Epoch 4, Train Loss: 0.8369, Val Loss: 1.1163, Val Accuracy: 0.5588
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold4.pth
+Epoch 5, Train Loss: 0.7317, Val Loss: 1.1715, Val Accuracy: 0.5068
+Validation loss did not improve. Counter: 1/5
+Epoch 6, Train Loss: 0.6416, Val Loss: 1.1495, Val Accuracy: 0.5747
+Validation loss did not improve. Counter: 2/5
+Epoch 7, Train Loss: 0.5765, Val Loss: 1.2426, Val Accuracy: 0.5362
+Validation loss did not improve. Counter: 3/5
+Epoch 8, Train Loss: 0.5020, Val Loss: 1.3383, Val Accuracy: 0.5317
+Validation loss did not improve. Counter: 4/5
+Epoch 9, Train Loss: 0.4435, Val Loss: 1.0469, Val Accuracy: 0.6086
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold4.pth
+Epoch 10, Train Loss: 0.4143, Val Loss: 1.4140, Val Accuracy: 0.5000
+Validation loss did not improve. Counter: 1/5
+Epoch 11, Train Loss: 0.3312, Val Loss: 1.2568, Val Accuracy: 0.5611
+Validation loss did not improve. Counter: 2/5
+Epoch 12, Train Loss: 0.2941, Val Loss: 1.3970, Val Accuracy: 0.5769
+Validation loss did not improve. Counter: 3/5
+Epoch 13, Train Loss: 0.2699, Val Loss: 1.4146, Val Accuracy: 0.5747
+Validation loss did not improve. Counter: 4/5
+Epoch 14, Train Loss: 0.2046, Val Loss: 1.3518, Val Accuracy: 0.5724
+Validation loss did not improve. Counter: 5/5
+Validation loss increased, stopping early.
+Fold fold4 utterance-level accuracy: 73.68% (38 utterances)
+======================================================================
+Running fold: fold5
+Epoch 1, Train Loss: 1.4328, Val Loss: 1.6887, Val Accuracy: 0.4312
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold5.pth
+Epoch 2, Train Loss: 1.0709, Val Loss: 1.2760, Val Accuracy: 0.5000
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold5.pth
+Epoch 3, Train Loss: 0.9020, Val Loss: 0.9291, Val Accuracy: 0.6558
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold5.pth
+Epoch 4, Train Loss: 0.7943, Val Loss: 1.0191, Val Accuracy: 0.6014
+Validation loss did not improve. Counter: 1/5
+Epoch 5, Train Loss: 0.6716, Val Loss: 0.9829, Val Accuracy: 0.6522
+Validation loss did not improve. Counter: 2/5
+Epoch 6, Train Loss: 0.6027, Val Loss: 1.0820, Val Accuracy: 0.6123
+Validation loss did not improve. Counter: 3/5
+Epoch 7, Train Loss: 0.5520, Val Loss: 0.9836, Val Accuracy: 0.6413
+Validation loss did not improve. Counter: 4/5
+Epoch 8, Train Loss: 0.4498, Val Loss: 1.1866, Val Accuracy: 0.5978
+Validation loss did not improve. Counter: 5/5
+Validation loss increased, stopping early.
+Fold fold5 utterance-level accuracy: 58.18% (55 utterances)
+======================================================================
+Running fold: fold6
+Epoch 1, Train Loss: 1.4744, Val Loss: 1.2557, Val Accuracy: 0.4943
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold6.pth
+Epoch 2, Train Loss: 1.1008, Val Loss: 1.1242, Val Accuracy: 0.5839
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold6.pth
+Epoch 3, Train Loss: 0.9552, Val Loss: 1.0413, Val Accuracy: 0.6092
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold6.pth
+Epoch 4, Train Loss: 0.8206, Val Loss: 1.2009, Val Accuracy: 0.5747
+Validation loss did not improve. Counter: 1/5
+Epoch 5, Train Loss: 0.7791, Val Loss: 1.0520, Val Accuracy: 0.6046
+Validation loss did not improve. Counter: 2/5
+Epoch 6, Train Loss: 0.6365, Val Loss: 1.0577, Val Accuracy: 0.6207
+Validation loss did not improve. Counter: 3/5
+Epoch 7, Train Loss: 0.6172, Val Loss: 0.9389, Val Accuracy: 0.6552
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold6.pth
+Epoch 8, Train Loss: 0.5202, Val Loss: 1.2049, Val Accuracy: 0.6299
+Validation loss did not improve. Counter: 1/5
+Epoch 9, Train Loss: 0.4443, Val Loss: 1.0389, Val Accuracy: 0.6368
+Validation loss did not improve. Counter: 2/5
+Epoch 10, Train Loss: 0.4110, Val Loss: 1.0543, Val Accuracy: 0.6437
+Validation loss did not improve. Counter: 3/5
+Epoch 11, Train Loss: 0.3912, Val Loss: 1.1404, Val Accuracy: 0.6391
+Validation loss did not improve. Counter: 4/5
+Epoch 12, Train Loss: 0.3215, Val Loss: 1.1881, Val Accuracy: 0.6345
+Validation loss did not improve. Counter: 5/5
+Validation loss increased, stopping early.
+Fold fold6 utterance-level accuracy: 68.57% (35 utterances)
+======================================================================
+Running fold: fold7
+Epoch 1, Train Loss: 1.5380, Val Loss: 1.3012, Val Accuracy: 0.5307
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold7.pth
+Epoch 2, Train Loss: 1.1643, Val Loss: 1.0070, Val Accuracy: 0.5847
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold7.pth
+Epoch 3, Train Loss: 0.9979, Val Loss: 1.0914, Val Accuracy: 0.5531
+Validation loss did not improve. Counter: 1/5
+Epoch 4, Train Loss: 0.8759, Val Loss: 0.9436, Val Accuracy: 0.6462
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold7.pth
+Epoch 5, Train Loss: 0.7884, Val Loss: 0.9061, Val Accuracy: 0.6480
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold7.pth
+Epoch 6, Train Loss: 0.7153, Val Loss: 0.8557, Val Accuracy: 0.6574
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold7.pth
+Epoch 7, Train Loss: 0.6367, Val Loss: 0.9692, Val Accuracy: 0.6872
+Validation loss did not improve. Counter: 1/5
+Epoch 8, Train Loss: 0.5797, Val Loss: 0.9166, Val Accuracy: 0.6369
+Validation loss did not improve. Counter: 2/5
+Epoch 9, Train Loss: 0.5170, Val Loss: 0.8449, Val Accuracy: 0.6927
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold7.pth
+Epoch 10, Train Loss: 0.4603, Val Loss: 0.8524, Val Accuracy: 0.6927
+Validation loss did not improve. Counter: 1/5
+Epoch 11, Train Loss: 0.4043, Val Loss: 0.9105, Val Accuracy: 0.6648
+Validation loss did not improve. Counter: 2/5
+Epoch 12, Train Loss: 0.3506, Val Loss: 0.9372, Val Accuracy: 0.6983
+Validation loss did not improve. Counter: 3/5
+Epoch 13, Train Loss: 0.2885, Val Loss: 0.9489, Val Accuracy: 0.6872
+Validation loss did not improve. Counter: 4/5
+Epoch 14, Train Loss: 0.2744, Val Loss: 1.1257, Val Accuracy: 0.7058
+Validation loss did not improve. Counter: 5/5
+Validation loss increased, stopping early.
+Fold fold7 utterance-level accuracy: 88.52% (61 utterances)
+======================================================================
+Running fold: fold8
+Epoch 1, Train Loss: 1.5259, Val Loss: 1.6402, Val Accuracy: 0.3803
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold8.pth
+Epoch 2, Train Loss: 1.1652, Val Loss: 1.2633, Val Accuracy: 0.4947
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold8.pth
+Epoch 3, Train Loss: 0.9973, Val Loss: 1.1816, Val Accuracy: 0.5000
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold8.pth
+Epoch 4, Train Loss: 0.8357, Val Loss: 1.3865, Val Accuracy: 0.5293
+Validation loss did not improve. Counter: 1/5
+Epoch 5, Train Loss: 0.7759, Val Loss: 1.0938, Val Accuracy: 0.5798
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold8.pth
+Epoch 6, Train Loss: 0.7164, Val Loss: 1.1394, Val Accuracy: 0.5718
+Validation loss did not improve. Counter: 1/5
+Epoch 7, Train Loss: 0.6651, Val Loss: 1.1839, Val Accuracy: 0.5718
+Validation loss did not improve. Counter: 2/5
+Epoch 8, Train Loss: 0.5347, Val Loss: 1.3052, Val Accuracy: 0.5745
+Validation loss did not improve. Counter: 3/5
+Epoch 9, Train Loss: 0.5041, Val Loss: 1.1500, Val Accuracy: 0.5824
+Validation loss did not improve. Counter: 4/5
+Epoch 10, Train Loss: 0.4441, Val Loss: 1.4642, Val Accuracy: 0.5612
+Validation loss did not improve. Counter: 5/5
+Validation loss increased, stopping early.
+Fold fold8 utterance-level accuracy: 78.26% (69 utterances)
+======================================================================
+Running fold: fold9
+Epoch 1, Train Loss: 1.4547, Val Loss: 1.2032, Val Accuracy: 0.5331
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold9.pth
+Epoch 2, Train Loss: 1.1313, Val Loss: 1.1936, Val Accuracy: 0.5166
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold9.pth
+Epoch 3, Train Loss: 0.9514, Val Loss: 0.9393, Val Accuracy: 0.6440
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold9.pth
+Epoch 4, Train Loss: 0.8792, Val Loss: 1.0513, Val Accuracy: 0.5927
+Validation loss did not improve. Counter: 1/5
+Epoch 5, Train Loss: 0.7926, Val Loss: 1.0339, Val Accuracy: 0.6308
+Validation loss did not improve. Counter: 2/5
+Epoch 6, Train Loss: 0.6744, Val Loss: 0.8730, Val Accuracy: 0.6507
+Validation loss improved, model saved to: /Users/leyanzhi/Repositories/SC4001-Neural-Network-Project/SER_DCNN_DTPM/models/dcnn_processed_emodb_speaker_norm_loso_fold9.pth
+Epoch 7, Train Loss: 0.6133, Val Loss: 1.0478, Val Accuracy: 0.6325
+Validation loss did not improve. Counter: 1/5
+Epoch 8, Train Loss: 0.5370, Val Loss: 0.9107, Val Accuracy: 0.6656
+Validation loss did not improve. Counter: 2/5
+Epoch 9, Train Loss: 0.4664, Val Loss: 0.9637, Val Accuracy: 0.6738
+Validation loss did not improve. Counter: 3/5
+Epoch 10, Train Loss: 0.4208, Val Loss: 0.9983, Val Accuracy: 0.6689
+Validation loss did not improve. Counter: 4/5
+Epoch 11, Train Loss: 0.3589, Val Loss: 1.0512, Val Accuracy: 0.6705
+Validation loss did not improve. Counter: 5/5
+Validation loss increased, stopping early.
+Fold fold9 utterance-level accuracy: 60.71% (56 utterances)
+======================================================================
+LOSO combined utterance-level accuracy: 68.97%
+  fold1: 63.27% on 49 utterances
+  fold10: 67.61% on 71 utterances
+  fold2: 50.00% on 58 utterances
+  fold3: 81.40% on 43 utterances
+  fold4: 73.68% on 38 utterances
+  fold5: 58.18% on 55 utterances
+  fold6: 68.57% on 35 utterances
+  fold7: 88.52% on 61 utterances
+  fold8: 78.26% on 69 utterances
+  fold9: 60.71% on 56 utterances
