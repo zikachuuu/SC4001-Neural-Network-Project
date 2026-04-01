@@ -102,9 +102,9 @@ def build_loso_split_configs(speaker_order: Sequence[str]) -> List[SplitConfig]:
     folds: List[SplitConfig] = []
     n = len(speaker_order)
     for i in range(n):
-        test_speaker = speaker_order[i]
-        validation_speaker = speaker_order[(i + 1) % n]
-        train_speakers = [spk for spk in speaker_order if spk not in {test_speaker, validation_speaker}]
+        test_speaker        = speaker_order[i]
+        validation_speaker  = speaker_order[(i + 1) % n]
+        train_speakers      = [spk for spk in speaker_order if spk not in {test_speaker, validation_speaker}]
         folds.append(
             SplitConfig(
                 train_speakers      = train_speakers,
