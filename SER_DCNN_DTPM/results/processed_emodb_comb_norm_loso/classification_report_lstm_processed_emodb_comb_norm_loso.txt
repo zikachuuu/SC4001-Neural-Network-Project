@@ -1,0 +1,19 @@
+Dataset: processed_emodb_comb_norm_loso
+Split mode: loso
+Utterance-level accuracy: 58.32%
+Mean t-IoU: 0.5702
+t-IoU success@0.50: 61.54%
+
+              precision    recall  f1-score   support
+
+           0       0.55      0.84      0.66       117
+           1       0.54      0.40      0.46        77
+           2       0.44      0.39      0.41        46
+           3       0.43      0.28      0.34        54
+           4       0.75      0.84      0.79       117
+           5       0.66      0.35      0.45        55
+           6       0.52      0.48      0.50        69
+
+    accuracy                           0.58       535
+   macro avg       0.55      0.51      0.52       535
+weighted avg       0.58      0.58      0.56       535
