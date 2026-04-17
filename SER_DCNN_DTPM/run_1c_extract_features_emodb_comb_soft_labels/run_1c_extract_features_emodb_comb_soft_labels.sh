@@ -15,13 +15,13 @@ cd "${PROJECT_DIR}"
 #   --output-dir ../emo_db_comb
 
 # 2) Soft-label extraction with original split.
-# python 1c_extract_features_emodb_comb_soft_labels.py \
+# python B2b_extract_features_emodb_comb_soft_labels.py \
 #   --data-dir ../emo_db_comb \
 #   --output-dir ./processed_emodb_comb_soft \
 #   --soft-label-decimals 3
 
 # 3) Soft-label extraction with LOSO split.
-python 1c_extract_features_emodb_comb_soft_labels.py \
+python B2b_extract_features_emodb_comb_soft_labels.py \
   --normalize-speaker \
   --data-dir ../emo_db_comb \
   --output-dir ./processed_emodb_comb_norm_loso_soft \

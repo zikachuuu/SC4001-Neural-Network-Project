@@ -318,15 +318,35 @@ def choose_segment_soft_label(
     return probs.astype(np.float32)
 
 
+def choose_segment_pair_label(
+    intervals: Sequence[Tuple[float, float, int]],
+    seg_start_sec: float,
+    seg_end_sec: float,
+) -> Tuple[int, int]:
+    ordered_labels: List[int] = []
+    seen_labels = set()
+
+    for start, end, label in intervals:
+        overlap = max(0.0, min(seg_end_sec, end) - max(seg_start_sec, start))
+        if overlap > 0.0 and int(label) not in seen_labels:
+            ordered_labels.append(int(label))
+            seen_labels.add(int(label))
+
+    if len(ordered_labels) == 2:
+        return ordered_labels[0], ordered_labels[1]
+
+    return (-1, -1)
+
+
 def slice_segments_with_soft_labels(
     stacked_features: np.ndarray,
     label_intervals: Sequence[Tuple[float, float, int]],
     cfg: FeatureConfig,
     num_classes: int,
     decimals: int,
-) -> List[Tuple[np.ndarray, np.ndarray, int]]:
+) -> List[Tuple[np.ndarray, np.ndarray, int, Tuple[int, int]]]:
     total_frames = stacked_features.shape[2]
-    out: List[Tuple[np.ndarray, np.ndarray, int]] = []
+    out: List[Tuple[np.ndarray, np.ndarray, int, Tuple[int, int]]] = []
     segment_duration_sec = cfg.window_ms + (cfg.segment_frames - 1) * cfg.hop_ms
 
     for start_frame in range(0, total_frames - cfg.segment_frames + 1, cfg.frame_shift):
@@ -343,16 +363,21 @@ def slice_segments_with_soft_labels(
             decimals=decimals,
         )
         hard = int(np.argmax(soft))
-        out.append((segment, soft, hard))
+        pair = choose_segment_pair_label(
+            intervals=label_intervals,
+            seg_start_sec=seg_start_sec,
+            seg_end_sec=seg_end_sec,
+        )
+        out.append((segment, soft, hard, pair))
 
     return out
 
 
 def initialize_dataset_buffers() -> Dict[str, Dict[str, List]]:
     return {
-        "train": {"X": [], "y": [], "y_soft": [], "utterance_ids": []},
-        "validation": {"X": [], "y": [], "y_soft": [], "utterance_ids": []},
-        "test": {"X": [], "y": [], "y_soft": [], "utterance_ids": []},
+        "train": {"X": [], "y": [], "y_soft": [], "y_pair": [], "utterance_ids": []},
+        "validation": {"X": [], "y": [], "y_soft": [], "y_pair": [], "utterance_ids": []},
+        "test": {"X": [], "y": [], "y_soft": [], "y_pair": [], "utterance_ids": []},
     }
 
 
@@ -402,10 +427,11 @@ def preprocess_emodb_comb_soft_labels(config: PreprocessConfig) -> Dict[str, Dic
             num_classes=num_classes,
             decimals=config.soft_label_decimals,
         )
-        for segment, soft_label, hard_label in segs_with_labels:
+        for segment, soft_label, hard_label, pair_label in segs_with_labels:
             datasets[split_name]["X"].append(segment)
             datasets[split_name]["y"].append(hard_label)
             datasets[split_name]["y_soft"].append(soft_label)
+            datasets[split_name]["y_pair"].append(pair_label)
             datasets[split_name]["utterance_ids"].append(utt.filename)
 
     if skipped_no_labels > 0:
@@ -417,6 +443,7 @@ def preprocess_emodb_comb_soft_labels(config: PreprocessConfig) -> Dict[str, Dic
             "X": np.array(datasets[split_name]["X"]),
             "y": np.array(datasets[split_name]["y"], dtype=np.int64),
             "y_soft": np.array(datasets[split_name]["y_soft"], dtype=np.float32),
+            "y_pair": np.array(datasets[split_name]["y_pair"], dtype=np.int64),
             "utterance_ids": np.array(datasets[split_name]["utterance_ids"]),
         }
     return converted
@@ -429,10 +456,11 @@ def save_datasets(output_dir: str, datasets: Dict[str, Dict[str, np.ndarray]]) -
         np.save(os.path.join(output_dir, f"X_{split_name}.npy"), split["X"])
         np.save(os.path.join(output_dir, f"y_{split_name}.npy"), split["y"])
         np.save(os.path.join(output_dir, f"y_soft_{split_name}.npy"), split["y_soft"])
+        np.save(os.path.join(output_dir, f"y_pair_{split_name}.npy"), split["y_pair"])
         np.save(os.path.join(output_dir, f"utterance_ids_{split_name}.npy"), split["utterance_ids"])
         print(
             f"Saved {len(split['X'])} segments for {split_name} to {output_dir} "
-            f"(y: {split['y'].shape}, y_soft: {split['y_soft'].shape})"
+            f"(y: {split['y'].shape}, y_soft: {split['y_soft'].shape}, y_pair: {split['y_pair'].shape})"
         )
 
 
