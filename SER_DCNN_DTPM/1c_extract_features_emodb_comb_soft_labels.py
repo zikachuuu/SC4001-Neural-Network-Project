@@ -1,20 +1,20 @@
 """
-Step 1b: Extract segment features from combined EMO-DB audio with hard labels.
+Step 1c: Extract segment features from combined EMO-DB audio with soft labels.
 
 What it does:
 - Loads generated multi-emotion wav files from emo_db_comb speaker folders.
-- Uses timeline CSV intervals (or filename fallback) to label each segment.
-- Assigns one hard class index per segment using overlap-majority.
-- Writes X_*.npy, y_*.npy, utterance_ids_*.npy for original split or LOSO folds.
+- Uses timeline CSV intervals (or filename fallback) to compute overlap per emotion in each segment.
+- Writes a 7-dim soft label vector per segment, where values sum to 1.0.
+- Also writes hard labels (argmax of soft labels) for backward compatibility.
 
 Recommended sequence:
-1) Run 1a_generate_dynamic_emodb_combinations.py to build emo_db_comb first.
-2) Run this file for hard-label training targets.
-3) If you want transition-aware labels, run 1c_extract_features_emodb_comb_soft_labels.py instead.
+1) Run 1a_generate_dynamic_emodb_combinations.py first.
+2) Run this file to build transition-aware targets.
+3) Train with y_soft_*.npy if you want soft-label learning.
 
 Quick run examples:
-- python 1b_extract_features_emodb_comb.py --output-dir ./processed_emodb_comb_og
-- python 1b_extract_features_emodb_comb.py --normalize-speaker --split-mode loso --output-dir ./processed_emodb_comb_norm_loso
+- python 1c_extract_features_emodb_comb_soft_labels.py --output-dir ./processed_emodb_comb_soft
+- python 1c_extract_features_emodb_comb_soft_labels.py --normalize-speaker --split-mode loso --output-dir ./processed_emodb_comb_soft_loso
 """
 
 import argparse
@@ -68,6 +68,7 @@ class PreprocessConfig:
     output_dir: str
     normalize_speaker: bool = False
     strict_unknown_emotion: bool = True
+    soft_label_decimals: int = 3
     split_config: SplitConfig = field(default_factory=SplitConfig)
     feature_config: FeatureConfig = field(default_factory=FeatureConfig)
 
@@ -144,7 +145,6 @@ def load_speaker_timeline_map(
 
             timeline_map.setdefault(generated_file, []).append((start_sec, end_sec, EMOTION_CODE_MAP[code]))
 
-    # Keep intervals sorted by start time.
     for generated_file in timeline_map:
         timeline_map[generated_file].sort(key=lambda x: x[0])
 
@@ -162,7 +162,6 @@ def collect_comb_utterances(
         if not os.path.isdir(speaker_dir):
             continue
 
-        # Expected folder style: speaker_16
         if not speaker_folder.startswith("speaker_"):
             continue
         speaker_id = speaker_folder.split("_")[-1]
@@ -265,36 +264,69 @@ def build_equal_intervals_from_label_sequence(
     return intervals
 
 
-def choose_segment_label(
+def choose_midpoint_label(
     intervals: Sequence[Tuple[float, float, int]],
     seg_start_sec: float,
     seg_end_sec: float,
 ) -> int:
-    overlap_by_label: Dict[int, float] = {}
-    for start, end, label in intervals:
-        overlap = max(0.0, min(seg_end_sec, end) - max(seg_start_sec, start))
-        if overlap > 0.0:
-            overlap_by_label[label] = overlap_by_label.get(label, 0.0) + overlap
-
-    if overlap_by_label:
-        # Majority by overlap duration; deterministic tie-break by smaller label index.
-        return sorted(overlap_by_label.items(), key=lambda x: (-x[1], x[0]))[0][0]
-
-    # Graceful fallback: pick label at segment midpoint, else first interval label.
     midpoint = 0.5 * (seg_start_sec + seg_end_sec)
     for start, end, label in intervals:
         if start <= midpoint < end:
-            return label
-    return intervals[0][2]
+            return int(label)
+    return int(intervals[0][2])
 
 
-def slice_segments_with_labels(
+def choose_segment_soft_label(
+    intervals: Sequence[Tuple[float, float, int]],
+    seg_start_sec: float,
+    seg_end_sec: float,
+    num_classes: int,
+    decimals: int,
+) -> np.ndarray:
+    probs = np.zeros(num_classes, dtype=np.float32)
+
+    for start, end, label in intervals:
+        overlap = max(0.0, min(seg_end_sec, end) - max(seg_start_sec, start))
+        if overlap > 0.0:
+            probs[int(label)] += float(overlap)
+
+    total_overlap = float(probs.sum())
+    if total_overlap > 0.0:
+        probs /= total_overlap
+    else:
+        fallback_label = choose_midpoint_label(intervals, seg_start_sec, seg_end_sec)
+        probs[fallback_label] = 1.0
+
+    if decimals >= 0:
+        probs = np.round(probs, decimals=decimals)
+        rounded_sum = float(probs.sum())
+        if rounded_sum <= 0.0:
+            fallback_idx = int(np.argmax(probs))
+            probs[:] = 0.0
+            probs[fallback_idx] = 1.0
+        else:
+            anchor = int(np.argmax(probs))
+            probs[anchor] += float(1.0 - rounded_sum)
+            probs = np.clip(probs, 0.0, 1.0)
+            clipped_sum = float(probs.sum())
+            if clipped_sum <= 0.0:
+                probs[:] = 0.0
+                probs[anchor] = 1.0
+            else:
+                probs /= clipped_sum
+
+    return probs.astype(np.float32)
+
+
+def slice_segments_with_soft_labels(
     stacked_features: np.ndarray,
     label_intervals: Sequence[Tuple[float, float, int]],
     cfg: FeatureConfig,
-) -> List[Tuple[np.ndarray, int]]:
+    num_classes: int,
+    decimals: int,
+) -> List[Tuple[np.ndarray, np.ndarray, int]]:
     total_frames = stacked_features.shape[2]
-    out: List[Tuple[np.ndarray, int]] = []
+    out: List[Tuple[np.ndarray, np.ndarray, int]] = []
     segment_duration_sec = cfg.window_ms + (cfg.segment_frames - 1) * cfg.hop_ms
 
     for start_frame in range(0, total_frames - cfg.segment_frames + 1, cfg.frame_shift):
@@ -303,21 +335,28 @@ def slice_segments_with_labels(
 
         seg_start_sec = start_frame * cfg.hop_ms
         seg_end_sec = seg_start_sec + segment_duration_sec
-        label = choose_segment_label(label_intervals, seg_start_sec, seg_end_sec)
-        out.append((segment, label))
+        soft = choose_segment_soft_label(
+            intervals=label_intervals,
+            seg_start_sec=seg_start_sec,
+            seg_end_sec=seg_end_sec,
+            num_classes=num_classes,
+            decimals=decimals,
+        )
+        hard = int(np.argmax(soft))
+        out.append((segment, soft, hard))
 
     return out
 
 
 def initialize_dataset_buffers() -> Dict[str, Dict[str, List]]:
     return {
-        "train": {"X": [], "y": [], "utterance_ids": []},
-        "validation": {"X": [], "y": [], "utterance_ids": []},
-        "test": {"X": [], "y": [], "utterance_ids": []},
+        "train": {"X": [], "y": [], "y_soft": [], "utterance_ids": []},
+        "validation": {"X": [], "y": [], "y_soft": [], "utterance_ids": []},
+        "test": {"X": [], "y": [], "y_soft": [], "utterance_ids": []},
     }
 
 
-def preprocess_emodb_comb(config: PreprocessConfig) -> Dict[str, Dict[str, np.ndarray]]:
+def preprocess_emodb_comb_soft_labels(config: PreprocessConfig) -> Dict[str, Dict[str, np.ndarray]]:
     utterances = collect_comb_utterances(
         data_dir=config.data_dir,
         strict_unknown_emotion=config.strict_unknown_emotion,
@@ -335,6 +374,7 @@ def preprocess_emodb_comb(config: PreprocessConfig) -> Dict[str, Dict[str, np.nd
         speaker_stats = compute_speaker_stats(utterance_mels)
 
     datasets = initialize_dataset_buffers()
+    num_classes = len(EMOTION_CODE_MAP)
 
     skipped_no_labels = 0
     for utt, raw_log_mel in utterance_mels:
@@ -347,7 +387,6 @@ def preprocess_emodb_comb(config: PreprocessConfig) -> Dict[str, Dict[str, np.nd
 
         intervals = utt.timeline_labels
         if not intervals:
-            # Fallback when timeline CSV is missing: split utterance equally using filename emotion sequence.
             total_duration = estimate_utterance_duration_sec(normalized_mel.shape[1], config.feature_config)
             intervals = build_equal_intervals_from_label_sequence(utt.fallback_label_sequence, total_duration)
 
@@ -356,10 +395,17 @@ def preprocess_emodb_comb(config: PreprocessConfig) -> Dict[str, Dict[str, np.nd
             print(f"[WARN] Skipping file without usable labels: {utt.filename}")
             continue
 
-        segs_with_labels = slice_segments_with_labels(stacked, intervals, config.feature_config)
-        for segment, label in segs_with_labels:
+        segs_with_labels = slice_segments_with_soft_labels(
+            stacked_features=stacked,
+            label_intervals=intervals,
+            cfg=config.feature_config,
+            num_classes=num_classes,
+            decimals=config.soft_label_decimals,
+        )
+        for segment, soft_label, hard_label in segs_with_labels:
             datasets[split_name]["X"].append(segment)
-            datasets[split_name]["y"].append(label)
+            datasets[split_name]["y"].append(hard_label)
+            datasets[split_name]["y_soft"].append(soft_label)
             datasets[split_name]["utterance_ids"].append(utt.filename)
 
     if skipped_no_labels > 0:
@@ -369,7 +415,8 @@ def preprocess_emodb_comb(config: PreprocessConfig) -> Dict[str, Dict[str, np.nd
     for split_name in ["train", "validation", "test"]:
         converted[split_name] = {
             "X": np.array(datasets[split_name]["X"]),
-            "y": np.array(datasets[split_name]["y"]),
+            "y": np.array(datasets[split_name]["y"], dtype=np.int64),
+            "y_soft": np.array(datasets[split_name]["y_soft"], dtype=np.float32),
             "utterance_ids": np.array(datasets[split_name]["utterance_ids"]),
         }
     return converted
@@ -381,19 +428,23 @@ def save_datasets(output_dir: str, datasets: Dict[str, Dict[str, np.ndarray]]) -
         split = datasets[split_name]
         np.save(os.path.join(output_dir, f"X_{split_name}.npy"), split["X"])
         np.save(os.path.join(output_dir, f"y_{split_name}.npy"), split["y"])
+        np.save(os.path.join(output_dir, f"y_soft_{split_name}.npy"), split["y_soft"])
         np.save(os.path.join(output_dir, f"utterance_ids_{split_name}.npy"), split["utterance_ids"])
-        print(f"Saved {len(split['X'])} segments for {split_name} to {output_dir}")
+        print(
+            f"Saved {len(split['X'])} segments for {split_name} to {output_dir} "
+            f"(y: {split['y'].shape}, y_soft: {split['y_soft'].shape})"
+        )
 
 
 def parse_args(default_data_dir: str, default_output_dir: str) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Preprocess EMO-DB combined speech files into segment-level features.",
+        description="Preprocess EMO-DB combined files into segment-level features with soft labels.",
         epilog=(
             "Examples:\n"
-            "  python 1b_extract_features_emodb_comb.py --output-dir ./processed_emodb_comb_og\n"
-            "  python 1b_extract_features_emodb_comb.py --normalize-speaker --output-dir ./processed_emodb_comb_speaker_norm\n"
-            "  python 1b_extract_features_emodb_comb.py --split-mode loso --output-dir ./processed_emodb_comb_loso\n"
-            "  python 1b_extract_features_emodb_comb.py --interactive"
+            "  python 1c_extract_features_emodb_comb_soft_labels.py --output-dir ./processed_emodb_comb_soft\n"
+            "  python 1c_extract_features_emodb_comb_soft_labels.py --normalize-speaker --output-dir ./processed_emodb_comb_soft_norm\n"
+            "  python 1c_extract_features_emodb_comb_soft_labels.py --split-mode loso --output-dir ./processed_emodb_comb_soft_loso\n"
+            "  python 1c_extract_features_emodb_comb_soft_labels.py --soft-label-decimals 3 --interactive"
         ),
         formatter_class=argparse.RawTextHelpFormatter,
     )
@@ -416,6 +467,12 @@ def parse_args(default_data_dir: str, default_output_dir: str) -> argparse.Names
         choices=["original", "loso"],
         default="original",
         help="Use original fixed speaker split or generate rotating LOSO folds.",
+    )
+    parser.add_argument(
+        "--soft-label-decimals",
+        type=int,
+        default=3,
+        help="Round soft-label values to this many decimals and re-normalize to sum to 1.",
     )
     return parser.parse_args()
 
@@ -456,6 +513,10 @@ def prompt_interactive(args: argparse.Namespace) -> argparse.Namespace:
     )
     args.split_mode = "loso" if use_loso else "original"
 
+    decimals_raw = input(f"Soft-label decimals [{args.soft_label_decimals}]: ").strip()
+    if decimals_raw:
+        args.soft_label_decimals = int(decimals_raw)
+
     return args
 
 
@@ -465,19 +526,21 @@ def run_pipeline(args: argparse.Namespace) -> None:
         output_dir=os.path.abspath(args.output_dir),
         normalize_speaker=args.normalize_speaker,
         strict_unknown_emotion=not args.skip_unknown_emotion,
+        soft_label_decimals=args.soft_label_decimals,
     )
 
     print("=" * 70)
-    print("EMO-DB combined preprocessing configuration")
+    print("EMO-DB combined preprocessing configuration (soft labels)")
     print(f"data_dir            : {config.data_dir}")
     print(f"output_dir          : {config.output_dir}")
     print(f"normalize_speaker   : {config.normalize_speaker}")
     print(f"strict_unknown_code : {config.strict_unknown_emotion}")
+    print(f"soft_label_decimals : {config.soft_label_decimals}")
     print(f"split_mode          : {args.split_mode}")
     print("=" * 70)
 
     if args.split_mode == "original":
-        datasets = preprocess_emodb_comb(config)
+        datasets = preprocess_emodb_comb_soft_labels(config)
         save_datasets(config.output_dir, datasets)
         print("Preprocessing completed.")
         return
@@ -492,6 +555,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
             output_dir=fold_dir,
             normalize_speaker=config.normalize_speaker,
             strict_unknown_emotion=config.strict_unknown_emotion,
+            soft_label_decimals=config.soft_label_decimals,
             split_config=split_cfg,
             feature_config=config.feature_config,
         )
@@ -502,7 +566,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
             f"validation={split_cfg.validation_speakers[0]}, "
             f"train={len(split_cfg.train_speakers)} speakers"
         )
-        datasets = preprocess_emodb_comb(fold_config)
+        datasets = preprocess_emodb_comb_soft_labels(fold_config)
         save_datasets(fold_dir, datasets)
 
     print("LOSO preprocessing completed.")
@@ -511,7 +575,7 @@ def run_pipeline(args: argparse.Namespace) -> None:
 def main() -> None:
     curr_dir = os.path.dirname(os.path.abspath(__file__))
     default_data_dir = os.path.join(curr_dir, "../emo_db_comb/")
-    default_output_dir = os.path.join(curr_dir, "./processed_emodb_comb_og/")
+    default_output_dir = os.path.join(curr_dir, "./processed_emodb_comb_soft/")
 
     args = parse_args(default_data_dir, default_output_dir)
     if args.interactive:

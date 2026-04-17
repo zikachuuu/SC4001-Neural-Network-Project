@@ -1,19 +1,203 @@
-Dataset: processed_emodb_comb_norm_loso
-Split mode: loso
-Utterance-level accuracy: 58.32%
-Mean t-IoU: 0.5702
-t-IoU success@0.50: 61.54%
+Dataset                                 : processed_emodb_comb_norm_loso
+Split mode                              : loso
+Global Mean per-segment accuracy        : 69.33%
+Fold Mean per-segment accuracy          : 69.42%
+Global Mean Cross-entropy               : 0.9470
+Fold Mean Cross-entropy                 : 0.9432
+t-IoU (Fold Mean)                       : 0.5733
+t-IoU success@0.50                     : 62.58%
+Section B total GT intervals counted    : 1977
 
+Note:
+  Global metrics are weighted by fold size while fold metrics are unweighted across folds.
+  They match only when all folds have the same number of segments.
+Segment-level classification report:
               precision    recall  f1-score   support
 
-           0       0.55      0.84      0.66       117
-           1       0.54      0.40      0.46        77
-           2       0.44      0.39      0.41        46
-           3       0.43      0.28      0.34        54
-           4       0.75      0.84      0.79       117
-           5       0.66      0.35      0.45        55
-           6       0.52      0.48      0.50        69
+       Anger     0.7242    0.8811    0.7950      3769
+     Boredom     0.6609    0.5610    0.6069      2515
+        Fear     0.6691    0.5565    0.6077      1937
+   Happiness     0.5190    0.4228    0.4660      2001
+     Sadness     0.8373    0.9260    0.8794      3068
+     Disgust     0.6508    0.6303    0.6404      1585
+     Neutral     0.6166    0.6125    0.6146      2266
 
-    accuracy                           0.58       535
-   macro avg       0.55      0.51      0.52       535
-weighted avg       0.58      0.58      0.56       535
+    accuracy                         0.6933     17141
+   macro avg     0.6683    0.6558    0.6586     17141
+weighted avg     0.6840    0.6933    0.6848     17141
+
+Class index mapping:
+0: Anger
+1: Boredom
+2: Fear
+3: Happiness
+4: Sadness
+5: Disgust
+6: Neutral
+
+Section B. Interval-level temporal detection by emotion (aggregated over all test utterances):
+Emotion            tIoU   tIoU@thr     Succ    Total
+----------------------------------------------------
+Anger             0.654      0.700      322      460
+Boredom           0.525      0.576      171      297
+Fear              0.465      0.489      134      274
+Happiness         0.388      0.390       97      249
+Sadness           0.785      0.894      220      246
+Disgust           0.574      0.682      101      148
+Neutral           0.558      0.611      185      303
+
+Interpretation:
+    - tIoU     : mean best-overlap IoU per ground-truth interval for that emotion.
+    - tIoU@thr : fraction of intervals with IoU >= threshold for that emotion.
+    - Succ     : count of successful intervals for that emotion.
+    - Total    : count of all ground-truth intervals for that emotion.
+
+Training progress per split/fold (epoch-wise):
+
+[fold1]
+Epoch 01 | train_loss=1.2919 | val_loss=1.2697
+Epoch 02 | train_loss=0.8869 | val_loss=1.1285
+Epoch 03 | train_loss=0.7507 | val_loss=1.2235
+Epoch 04 | train_loss=0.6884 | val_loss=1.2496
+Epoch 05 | train_loss=0.6380 | val_loss=1.1468
+Epoch 06 | train_loss=0.6070 | val_loss=1.1613
+Epoch 07 | train_loss=0.5830 | val_loss=1.1188
+Epoch 08 | train_loss=0.5600 | val_loss=1.2609
+Epoch 09 | train_loss=0.5360 | val_loss=1.1123
+Epoch 10 | train_loss=0.5425 | val_loss=1.1479
+Epoch 11 | train_loss=0.5316 | val_loss=1.2445
+Epoch 12 | train_loss=0.5067 | val_loss=1.1087
+Epoch 13 | train_loss=0.5037 | val_loss=1.1715
+Epoch 14 | train_loss=0.4953 | val_loss=1.2045
+Epoch 15 | train_loss=0.4707 | val_loss=1.1058
+Epoch 16 | train_loss=0.4560 | val_loss=1.1501
+Epoch 17 | train_loss=0.4753 | val_loss=1.1190
+Epoch 18 | train_loss=0.4579 | val_loss=1.0825
+Epoch 19 | train_loss=0.4407 | val_loss=1.1694
+Epoch 20 | train_loss=0.4308 | val_loss=1.1796
+
+[fold10]
+Epoch 01 | train_loss=1.1008 | val_loss=0.8205
+Epoch 02 | train_loss=0.6422 | val_loss=0.8009
+Epoch 03 | train_loss=0.5112 | val_loss=0.7590
+Epoch 04 | train_loss=0.4623 | val_loss=0.7126
+Epoch 05 | train_loss=0.4647 | val_loss=0.6887
+Epoch 06 | train_loss=0.4115 | val_loss=0.7143
+Epoch 07 | train_loss=0.3789 | val_loss=0.6669
+Epoch 08 | train_loss=0.3460 | val_loss=0.6827
+Epoch 09 | train_loss=0.3186 | val_loss=0.7138
+Epoch 10 | train_loss=0.3034 | val_loss=0.7110
+Epoch 11 | train_loss=0.3116 | val_loss=0.6687
+Epoch 12 | train_loss=0.2925 | val_loss=0.7269
+
+[fold2]
+Epoch 01 | train_loss=0.5639 | val_loss=0.6043
+Epoch 02 | train_loss=0.0985 | val_loss=0.5916
+Epoch 03 | train_loss=0.0445 | val_loss=0.6216
+Epoch 04 | train_loss=0.0301 | val_loss=0.5866
+Epoch 05 | train_loss=0.0256 | val_loss=0.6196
+Epoch 06 | train_loss=0.0169 | val_loss=0.6057
+Epoch 07 | train_loss=0.0134 | val_loss=0.6253
+Epoch 08 | train_loss=0.0104 | val_loss=0.6605
+Epoch 09 | train_loss=0.0095 | val_loss=0.6776
+
+[fold3]
+Epoch 01 | train_loss=1.0588 | val_loss=0.9901
+Epoch 02 | train_loss=0.6031 | val_loss=0.8925
+Epoch 03 | train_loss=0.4832 | val_loss=0.8554
+Epoch 04 | train_loss=0.4351 | val_loss=0.8372
+Epoch 05 | train_loss=0.3864 | val_loss=0.9320
+Epoch 06 | train_loss=0.3551 | val_loss=0.8273
+Epoch 07 | train_loss=0.3458 | val_loss=1.0336
+Epoch 08 | train_loss=0.3264 | val_loss=0.8769
+Epoch 09 | train_loss=0.2872 | val_loss=0.8650
+Epoch 10 | train_loss=0.2666 | val_loss=0.9708
+Epoch 11 | train_loss=0.2700 | val_loss=0.9896
+
+[fold4]
+Epoch 01 | train_loss=1.2150 | val_loss=1.1988
+Epoch 02 | train_loss=0.8332 | val_loss=1.1573
+Epoch 03 | train_loss=0.7096 | val_loss=1.1932
+Epoch 04 | train_loss=0.6732 | val_loss=1.2670
+Epoch 05 | train_loss=0.6384 | val_loss=1.1891
+Epoch 06 | train_loss=0.6102 | val_loss=1.1154
+Epoch 07 | train_loss=0.5835 | val_loss=1.0827
+Epoch 08 | train_loss=0.5526 | val_loss=1.1498
+Epoch 09 | train_loss=0.5507 | val_loss=1.1555
+Epoch 10 | train_loss=0.5508 | val_loss=1.0706
+Epoch 11 | train_loss=0.5090 | val_loss=1.1000
+Epoch 12 | train_loss=0.4922 | val_loss=1.0002
+Epoch 13 | train_loss=0.4804 | val_loss=1.0984
+Epoch 14 | train_loss=0.4962 | val_loss=1.1599
+Epoch 15 | train_loss=0.4815 | val_loss=1.0793
+Epoch 16 | train_loss=0.4695 | val_loss=1.0604
+Epoch 17 | train_loss=0.4643 | val_loss=1.0773
+
+[fold5]
+Epoch 01 | train_loss=1.0087 | val_loss=0.9488
+Epoch 02 | train_loss=0.5755 | val_loss=0.8400
+Epoch 03 | train_loss=0.4695 | val_loss=0.8469
+Epoch 04 | train_loss=0.4180 | val_loss=0.8540
+Epoch 05 | train_loss=0.3803 | val_loss=0.8527
+Epoch 06 | train_loss=0.3501 | val_loss=0.8246
+Epoch 07 | train_loss=0.3234 | val_loss=0.7830
+Epoch 08 | train_loss=0.2999 | val_loss=0.8131
+Epoch 09 | train_loss=0.2808 | val_loss=0.7959
+Epoch 10 | train_loss=0.2682 | val_loss=0.7755
+Epoch 11 | train_loss=0.2519 | val_loss=0.8307
+Epoch 12 | train_loss=0.2454 | val_loss=0.7680
+Epoch 13 | train_loss=0.2328 | val_loss=0.8474
+Epoch 14 | train_loss=0.2248 | val_loss=0.7892
+Epoch 15 | train_loss=0.2105 | val_loss=0.7820
+Epoch 16 | train_loss=0.2039 | val_loss=0.7729
+Epoch 17 | train_loss=0.2022 | val_loss=0.7056
+Epoch 18 | train_loss=0.1796 | val_loss=0.8136
+Epoch 19 | train_loss=0.1837 | val_loss=0.7824
+Epoch 20 | train_loss=0.1705 | val_loss=0.7728
+
+[fold6]
+Epoch 01 | train_loss=0.8879 | val_loss=0.9545
+Epoch 02 | train_loss=0.4222 | val_loss=0.7888
+Epoch 03 | train_loss=0.3073 | val_loss=0.8412
+Epoch 04 | train_loss=0.2601 | val_loss=0.8170
+Epoch 05 | train_loss=0.2397 | val_loss=0.8309
+Epoch 06 | train_loss=0.2095 | val_loss=0.8758
+Epoch 07 | train_loss=0.2017 | val_loss=0.8578
+
+[fold7]
+Epoch 01 | train_loss=1.2540 | val_loss=1.1159
+Epoch 02 | train_loss=0.9146 | val_loss=0.9301
+Epoch 03 | train_loss=0.8075 | val_loss=0.8637
+Epoch 04 | train_loss=0.7715 | val_loss=0.9131
+Epoch 05 | train_loss=0.7376 | val_loss=0.8762
+Epoch 06 | train_loss=0.7101 | val_loss=0.8890
+Epoch 07 | train_loss=0.6816 | val_loss=0.8188
+Epoch 08 | train_loss=0.6532 | val_loss=0.8611
+Epoch 09 | train_loss=0.6508 | val_loss=0.8904
+Epoch 10 | train_loss=0.6430 | val_loss=0.7742
+Epoch 11 | train_loss=0.6160 | val_loss=0.7967
+Epoch 12 | train_loss=0.5937 | val_loss=0.9265
+Epoch 13 | train_loss=0.5830 | val_loss=0.8220
+Epoch 14 | train_loss=0.5736 | val_loss=0.8065
+Epoch 15 | train_loss=0.5784 | val_loss=0.7891
+
+[fold8]
+Epoch 01 | train_loss=1.1413 | val_loss=1.0900
+Epoch 02 | train_loss=0.6724 | val_loss=1.0103
+Epoch 03 | train_loss=0.5318 | val_loss=0.9147
+Epoch 04 | train_loss=0.4506 | val_loss=0.9795
+Epoch 05 | train_loss=0.4154 | val_loss=1.1439
+Epoch 06 | train_loss=0.3926 | val_loss=0.9919
+Epoch 07 | train_loss=0.3492 | val_loss=0.9196
+Epoch 08 | train_loss=0.3289 | val_loss=1.0387
+
+[fold9]
+Epoch 01 | train_loss=0.7439 | val_loss=0.7549
+Epoch 02 | train_loss=0.2422 | val_loss=0.7099
+Epoch 03 | train_loss=0.1501 | val_loss=0.6724
+Epoch 04 | train_loss=0.1076 | val_loss=0.6692
+Epoch 05 | train_loss=0.0862 | val_loss=0.7211
+Epoch 06 | train_loss=0.0776 | val_loss=0.7296
+Epoch 07 | train_loss=0.0653 | val_loss=0.7588
+Epoch 08 | train_loss=0.0610 | val_loss=0.8799
+Epoch 09 | train_loss=0.0552 | val_loss=0.7830

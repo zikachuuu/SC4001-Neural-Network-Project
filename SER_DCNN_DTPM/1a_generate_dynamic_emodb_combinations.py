@@ -1,3 +1,23 @@
+"""
+Step 1a: Generate combined multi-emotion utterances from original EMO-DB wav files.
+
+What it does:
+- Groups files by speaker.
+- Concatenates 2 to 4 source utterances from the same speaker.
+- Saves generated wav files into speaker folders.
+- Writes timeline CSV files that store start/end emotion intervals for each generated file.
+
+Recommended sequence:
+1) Start from original EMO-DB wav files.
+2) Run this file to generate combined audio + timeline labels.
+3) Run 1b_extract_features_emodb_comb.py for hard labels per segment.
+4) Or run 1c_extract_features_emodb_comb_soft_labels.py for soft labels per segment.
+
+Quick run examples:
+- python 1a_generate_dynamic_emodb_combinations.py --output-dir ../emo_db_comb
+- python 1a_generate_dynamic_emodb_combinations.py --min-concat 2 --max-concat 4 --unique-combinations
+"""
+
 import argparse
 import itertools
 import math

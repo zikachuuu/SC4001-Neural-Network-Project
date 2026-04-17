@@ -1,3 +1,24 @@
+"""
+Step 1: Extract segment features from original EMO-DB single-emotion wav files.
+
+What it does:
+- Loads original EMO-DB wav files.
+- Computes log-Mel + delta + delta-delta features.
+- Slices utterances into fixed-length overlapping segments.
+- Writes split files (train/validation/test or LOSO fold files) into .npy arrays.
+
+Recommended sequence:
+1) Run this file when you want the original EMO-DB baseline dataset.
+2) Run 1a_generate_dynamic_emodb_combinations.py when you want synthetic multi-emotion utterances.
+3) Run 1b_extract_features_emodb_comb.py for hard labels on combined audio.
+4) Run 1c_extract_features_emodb_comb_soft_labels.py for soft transition-aware labels.
+
+Quick run examples:
+- python 1_extract_features_emodb.py --output-dir ./processed_emodb_og
+- python 1_extract_features_emodb.py --normalize-speaker --output-dir ./processed_emodb_norm
+- python 1_extract_features_emodb.py --split-mode loso --output-dir ./processed_emodb_loso
+"""
+
 import argparse
 import os
 from dataclasses import dataclass, field
