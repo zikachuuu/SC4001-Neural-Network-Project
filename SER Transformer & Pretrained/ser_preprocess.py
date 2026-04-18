@@ -1,10 +1,6 @@
 """
 Mel-spectrogram preprocessing pipeline for EmoDB.
 
-Re-implements the same feature extraction as the baseline
-(SC4001-Neural-Network-Project/SER_DCNN_DTPM/1_extract_features_emodb.py)
-so that Track 1 (Transformer) operates on identical features.
-
 Usage:
     python ser_preprocess.py \
         --data-dir SC4001-Neural-Network-Project/emodb \

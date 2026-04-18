@@ -1,8 +1,5 @@
 """
-Shared utilities for SC4001 Speech Emotion Recognition project.
-
-Self-contained module — does NOT import from SC4001-Neural-Network-Project/.
-Provides: emotion constants, LOSO splits, evaluation helpers.
+Shared utilities for SC4001 Speech Emotion Recognition project (4a, 4b).
 """
 
 import os
