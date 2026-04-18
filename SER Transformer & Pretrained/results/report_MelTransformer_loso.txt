@@ -1,0 +1,17 @@
+Model: MelTransformer
+Split: loso
+Utterance-level accuracy: 57.20%
+
+              precision    recall  f1-score   support
+
+       Anger       0.63      0.89      0.74       127
+     Boredom       0.51      0.54      0.53        81
+        Fear       0.53      0.23      0.32        69
+   Happiness       0.44      0.23      0.30        71
+     Sadness       0.77      0.95      0.85        62
+     Disgust       0.38      0.59      0.46        46
+     Neutral       0.55      0.39      0.46        79
+
+    accuracy                           0.57       535
+   macro avg       0.55      0.55      0.52       535
+weighted avg       0.56      0.57      0.54       535

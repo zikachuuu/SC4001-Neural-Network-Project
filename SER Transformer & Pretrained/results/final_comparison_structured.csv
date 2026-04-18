@@ -1,0 +1,10 @@
+model,accuracy,macro_f1,notes
+DCNN+DTPM+SVM,,,[Teammate to fill]
+CNN+BiLSTM,,,[Teammate to fill]
+MelTransformer (original),0.5720000000000001,0.52,results\report_MelTransformer_loso.txt
+MelTransformerEnhanced (enhanced),0.7533,0.75,results\report_MelTransformerEnhanced_loso.txt
+Wav2Vec2-base (baseline),0.8449,0.85,results\report_Wav2Vec2-base_loso.txt
+Wav2Vec2-base-attnstat,0.8598,0.8558,results\report_Wav2Vec2-base-attnstat_loso.txt
+WavLM-base-attnstat,0.8654000000000001,0.8633,results\report_WavLM-base-attnstat_loso.txt
+Whisper-base,0.8299,0.8219,results\report_Whisper-base_loso.txt
+HuBERT-base-attnstat,0.8579000000000001,0.8544,results\report_HuBERT-base-attnstat_loso.txt

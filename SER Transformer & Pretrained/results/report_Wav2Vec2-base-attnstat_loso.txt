@@ -1,0 +1,18 @@
+Model: Wav2Vec2-base-attnstat
+Split: loso
+Utterance-level accuracy: 85.98%
+Macro-F1: 0.8558
+
+              precision    recall  f1-score   support
+
+       Anger       0.91      0.90      0.90       127
+     Boredom       0.87      0.90      0.88        81
+        Fear       0.89      0.71      0.79        69
+   Happiness       0.67      0.79      0.73        71
+     Sadness       0.92      0.98      0.95        62
+     Disgust       0.85      0.87      0.86        46
+     Neutral       0.89      0.85      0.87        79
+
+    accuracy                           0.86       535
+   macro avg       0.86      0.86      0.86       535
+weighted avg       0.86      0.86      0.86       535

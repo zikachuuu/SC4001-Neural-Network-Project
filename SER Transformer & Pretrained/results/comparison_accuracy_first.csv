@@ -1,0 +1,11 @@
+model,accuracy,macro_f1,source
+Pretrained-Ensemble-top4,0.9065420560747663,0.903596838392762,results\report_Pretrained-Ensemble-top4_loso.txt
+Pretrained-Ensemble-top2,0.8990654205607477,0.8971166135346383,results\report_Pretrained-Ensemble-top2_loso.txt
+Pretrained-Ensemble-top3,0.897196261682243,0.8962387506069424,results\report_Pretrained-Ensemble-top3_loso.txt
+WavLM-base-attnstat,0.8654205607476636,0.8632917819505945,results\report_WavLM-base-attnstat_loso.txt
+Wav2Vec2-base-attnstat,0.8598130841121495,0.855810803060227,results\report_Wav2Vec2-base-attnstat_loso.txt
+HuBERT-base-attnstat,0.8579439252336448,0.8544012702119571,results\report_HuBERT-base-attnstat_loso.txt
+Wav2Vec2-base,0.8449,0.85,results\report_Wav2Vec2-base_loso.txt
+Whisper-base,0.8299065420560747,0.8218945449337189,results\report_Whisper-base_loso.txt
+MelTransformerEnhanced,0.7533,0.75,results\report_MelTransformerEnhanced_loso.txt
+MelTransformer,0.5720000000000001,0.52,results\report_MelTransformer_loso.txt

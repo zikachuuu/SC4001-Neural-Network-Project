@@ -1,0 +1,8 @@
+short_name,model_id,accuracy,macro_f1,num_folds,num_utterances,elapsed_minutes,prediction_path,report_path,cm_path
+Wav2Vec2-base-attnstat,facebook/wav2vec2-base,0.8598130841121495,0.855810803060227,10,535,9.507060794035594,results\Wav2Vec2-base-attnstat_loso_predictions.csv,results\report_Wav2Vec2-base-attnstat_loso.txt,results\cm_Wav2Vec2-base-attnstat_loso.png
+WavLM-base-attnstat,microsoft/wavlm-base,0.8654205607476636,0.8632917819505945,10,535,8.872862362861634,results\WavLM-base-attnstat_loso_predictions.csv,results\report_WavLM-base-attnstat_loso.txt,results\cm_WavLM-base-attnstat_loso.png
+Whisper-base,openai/whisper-base,0.8299065420560747,0.8218945449337189,10,535,15.152189962069194,results\Whisper-base_loso_predictions.csv,results\report_Whisper-base_loso.txt,results\cm_Whisper-base_loso.png
+HuBERT-base-attnstat,facebook/hubert-base-ls960,0.8579439252336448,0.8544012702119571,10,535,7.091596547762553,results\HuBERT-base-attnstat_loso_predictions.csv,results\report_HuBERT-base-attnstat_loso.txt,results\cm_HuBERT-base-attnstat_loso.png
+Pretrained-Ensemble-top2,,0.8990654205607477,0.8971166135346383,,,,results\Pretrained-Ensemble-top2_loso_predictions.csv,results\report_Pretrained-Ensemble-top2_loso.txt,results\cm_Pretrained-Ensemble-top2_loso.png
+Pretrained-Ensemble-top3,,0.897196261682243,0.8962387506069424,,,,results\Pretrained-Ensemble-top3_loso_predictions.csv,results\report_Pretrained-Ensemble-top3_loso.txt,results\cm_Pretrained-Ensemble-top3_loso.png
+Pretrained-Ensemble-top4,,0.9065420560747663,0.903596838392762,,,,results\Pretrained-Ensemble-top4_loso_predictions.csv,results\report_Pretrained-Ensemble-top4_loso.txt,results\cm_Pretrained-Ensemble-top4_loso.png
