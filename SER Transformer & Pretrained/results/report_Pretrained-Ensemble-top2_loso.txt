@@ -1,0 +1,18 @@
+Model: Pretrained-Ensemble-top2
+Split: loso
+Utterance-level accuracy: 88.04%
+Macro-F1: 0.8789
+
+              precision    recall  f1-score   support
+
+       Anger       0.89      0.93      0.91       127
+     Boredom       0.87      0.93      0.90        81
+        Fear       1.00      0.75      0.86        69
+   Happiness       0.71      0.79      0.75        71
+     Sadness       0.97      0.92      0.94        62
+     Disgust       0.93      0.87      0.90        46
+     Neutral       0.87      0.92      0.90        79
+
+    accuracy                           0.88       535
+   macro avg       0.89      0.87      0.88       535
+weighted avg       0.89      0.88      0.88       535
