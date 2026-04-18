@@ -1,0 +1,56 @@
+Dataset: processed_emodb_og_loso
+Data kind: original
+Split mode: loso
+Segment-level accuracy: 55.53%
+
+Section A. Segment-level classification:
+              precision    recall  f1-score   support
+
+       Anger     0.6372    0.7297    0.6803       910
+     Boredom     0.5259    0.4448    0.4820       616
+        Fear     0.4212    0.3449    0.3793       403
+   Happiness     0.3829    0.3476    0.3644       489
+     Sadness     0.7221    0.7534    0.7374       738
+     Disgust     0.4790    0.3886    0.4291       440
+     Neutral     0.4744    0.6016    0.5305       492
+
+    accuracy                         0.5553      4088
+   macro avg     0.5204    0.5158    0.5147      4088
+weighted avg     0.5474    0.5553    0.5482      4088
+
+
+Section A. Segment-level confusion matrix:
+[[664   5  34 148   0  50   9]
+ [  6 274  17  12 116  45 146]
+ [ 89   4 139  55  31  40  45]
+ [204   9  41 170   4  32  29]
+ [  0  90  26   0 556   0  66]
+ [ 71  52  45  49  19 171  33]
+ [  8  87  28  10  44  19 296]]
+
+Section B. Utterance-level classification:
+              precision    recall  f1-score   support
+
+       Anger     0.6731    0.8268    0.7420       127
+     Boredom     0.5970    0.4938    0.5405        81
+        Fear     0.6596    0.4493    0.5345        69
+   Happiness     0.5455    0.4225    0.4762        71
+     Sadness     0.6707    0.8871    0.7639        62
+     Disgust     0.5349    0.5000    0.5169        46
+     Neutral     0.6471    0.6962    0.6707        79
+
+    accuracy                         0.6336       535
+   macro avg     0.6183    0.6108    0.6064       535
+weighted avg     0.6269    0.6336    0.6221       535
+
+
+Utterance-level accuracy: 63.36%
+
+Section B. Utterance-level confusion matrix:
+[[105   0   3  16   0   3   0]
+ [  0  40   1   1  15   6  18]
+ [ 14   0  31   5   5   7   7]
+ [ 30   2   5  30   0   1   3]
+ [  0   6   1   0  55   0   0]
+ [  6   7   3   3   2  23   2]
+ [  1  12   3   0   5   3  55]]

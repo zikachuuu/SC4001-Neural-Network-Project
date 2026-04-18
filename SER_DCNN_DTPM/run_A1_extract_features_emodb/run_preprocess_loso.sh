@@ -6,7 +6,7 @@ PROJECT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 PYTHON_BIN="${PYTHON_BIN:-python}"
 
 cd "$PROJECT_DIR"
-"$PYTHON_BIN" 1_extract_features_emodb.py \
+"$PYTHON_BIN" A1_extract_features_emodb.py \
   --split-mode loso \
   --output-dir ./processed_emodb_og_loso
 
